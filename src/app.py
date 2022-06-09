@@ -24,3 +24,5 @@ def index():
         authorized_msg="" if authorized else "not",
         email=resp.json()["email"]
     )
+
+application = app
