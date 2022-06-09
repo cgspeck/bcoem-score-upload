@@ -1,0 +1,1 @@
+https://github.com/singingwolfboy/flask-dance-google
