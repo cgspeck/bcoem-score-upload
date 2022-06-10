@@ -1,4 +1,7 @@
 blinker==1.4
 Flask-Dance==6.0.0
+Flask-WTF==1.0.1
 gunicorn==20.1.0
+mysql-connector-python==8.0.29
 python-dotenv==0.20.0
+WTForms==3.0.1

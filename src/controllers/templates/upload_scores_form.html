@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<head>
+    <title>Score Upload System</title>
+</head>
+    <body>
+        <h1>Upload scores form</h1>
+        <form method="POST" action="{{ url_for('upload_scores.show_form') }}" enctype="multipart/form-data">
+            {{ form.csrf_token }}
+            {{ form.environment.label }} {{ form.environment }}
+            {% if form.environment.errors %}
+                <ul class="errors">
+                {% for error in form.environment.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <p>{{ form.clear_existing.label }} {{ form.clear_existing }}</p>
+            {{ form.csv_file.label }} {{ form.csv_file }}
+            {% if form.csv_file.errors %}
+                <ul class="errors">
+                {% for error in form.csv_file.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <p>{{ form.confirm.label }} {{ form.confirm }}</p>
+            {% if form.confirm.errors %}
+                <ul class="errors">
+                {% for error in form.confirm.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <p><input type="submit" value="Go"></p>
+        </form>
+        <a href={{ url_for('home_page.show') }} >Back to home</a>
+    </body>
+</html>

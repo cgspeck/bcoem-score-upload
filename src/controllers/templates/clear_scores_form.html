@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+    <title>Score Upload System</title>
+</head>
+    <body>
+        <h1>Clear Scores</h1>
+        <form method="POST" action="{{ url_for('clear_scores.show_form') }}">
+            {{ form.csrf_token }}
+            {{ form.environment.label }} {{ form.environment }}
+            {% if form.environment.errors %}
+                <ul class="errors">
+                {% for error in form.environment.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            {{ form.confirm.label }} {{ form.confirm }}
+            {% if form.confirm.errors %}
+                <ul class="errors">
+                {% for error in form.confirm.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+            <p><input type="submit" value="Go"></p>
+        </form>
+
+        <a href={{ url_for('home_page.show') }} >Back to home</a>
+    </body>
+</html>

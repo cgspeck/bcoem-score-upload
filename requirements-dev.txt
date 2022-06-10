@@ -1,0 +1,5 @@
+ipdb
+pytest
+pytest-snapshot
+simplejson==3.17.6
+-r requirements.txt

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+    <title>Score Upload System</title>
+</head>
+    <body>
+        <h1>Score Upload System</h1>
+        <p>Welcome {{ g.user_name }}</p>
+
+        {% if config.BCOME_ENVS_EXIST  %}
+
+        <p><a href={{ url_for('clear_scores.show_form') }} >Clear scores</a></p>
+
+        <p><a href={{ url_for('upload_scores.show_form') }} >Upload scores</a></p>
+        {% else %}
+        <p>Error: no BCOE&M environments configured!</p>
+        {% endif %}
+    </body>
+</html>

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<body>
+    <h1>Message Log</h1>
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+    <p><a href={{ url_for('home_page.show') }} >Back to home</a></p>
+</body>
+</html>
