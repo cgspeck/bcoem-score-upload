@@ -4,14 +4,17 @@ from wtforms.validators import DataRequired
 from wtforms import BooleanField, RadioField
 from flask_wtf import FlaskForm
 from flask import current_app
+from src.controllers.helpers import get_db_connection
 from src.csv_validate import (
     REQUIRED_HEADERS,
     has_required_headers,
     is_csv,
     try_decode_stream,
 )
+from src.score_process import load_entries_from_csv, prepare_entries
 
 from src.utils import must_be_authorized, save_upload
+from src.web_utils import message_log
 
 
 upload_scores = Blueprint("upload_scores", __name__, template_folder="templates")
@@ -69,8 +72,19 @@ def show_form():
         if not ok:
             return render_template(f"upload_scores_form.html", form=form)
 
-        save_upload(t_io)
+        messages: list[str] = []
+        filename = save_upload(t_io)
+        messages.append(f"Saved upload to {filename}")
+        entries = load_entries_from_csv(t_io)
+        messages.append(f"Loaded entries from CSV")
+        cnn = get_db_connection(form.environment.data, messages)
+        data_valid = prepare_entries(cnn, entries, messages)
 
-        return "success!"
+        if not data_valid:
+            messages.append("Data validation failed!")
+            return message_log(messages)
+
+        messages.append("Data validation succeeded")
+        return message_log(messages)
 
     return render_template(f"upload_scores_form.html", form=form)

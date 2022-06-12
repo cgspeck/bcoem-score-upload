@@ -29,11 +29,16 @@ def determine_config(env: str):
     
     raise ValueError(f"Unknoen env: '{env}'")
 
-
 def ensure_paths_exist():
     BACKUP_PATH.mkdir(parents=True, exist_ok=True)
     UPLOAD_PATH.mkdir(parents=True, exist_ok=True)
 
+def format_error_message(msg: str, messages: list[str]):
+    messages.append("")
+    messages.append("ERROR!!!")
+    messages.append("-" * 20)
+    messages.append(msg)
+    messages.append("-" * 20)
 
 def must_be_authorized(f):
     @wraps(f)
@@ -71,7 +76,11 @@ def save_backup(data: list[str], retain_days=DEFAULT_RETENTION_DAYS) -> Path:
     return data_path
 
 
-def save_upload(data: StringIO, retain_days=DEFAULT_RETENTION_DAYS):
+def save_upload(data: StringIO, retain_days=DEFAULT_RETENTION_DAYS) -> str:
+    """
+    Saves upload an metadata about uploader.
+    Returns filename.
+    """
     base_filename = time.time()
     data_path = Path(UPLOAD_PATH, f"{base_filename}.csv")
     meta_path = Path(UPLOAD_PATH, f"{base_filename}.meta.txt")
@@ -93,3 +102,4 @@ Remote Address: {remote_addr}
     """
     meta_path.write_text(meta_payload)
     cleanup(UPLOAD_PATH, retain_days)
+    return data_path.name

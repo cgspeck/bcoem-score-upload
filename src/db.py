@@ -1,6 +1,6 @@
 
 
-from typing import Dict, Optional, Union
+from typing import Dict, Union
 
 import mysql.connector
 from mysql.connector import MySQLConnection
@@ -27,12 +27,6 @@ DELETE FROM judging_scores;
 
 
 def extract_db_config(fp: str) -> DBConfig:
-    user: Optional[str] = None
-    password: Optional[str] = None
-    host: Optional[str] = None
-    database: Optional[str] = None
-    port: Optional[int] = None
-    
     memo: Dict[str, Union[None, str, int]] = { v: None for v in PHPKEY_DBCONFIG_MAP.values()}
     
     with open(fp, "rt") as fh:
