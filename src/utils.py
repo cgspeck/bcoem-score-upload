@@ -8,8 +8,8 @@ from functools import wraps
 
 import oauthlib
 
-BACKUP_PATH = Path("data/backups")
-UPLOAD_PATH = Path("data/uploads")
+BACKUP_PATH = Path("data/backups").resolve()
+UPLOAD_PATH = Path("data/uploads").resolve()
 
 SECONDS_PER_DAY = 86400
 DEFAULT_RETENTION_DAYS = 3 * 365

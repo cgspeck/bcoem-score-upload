@@ -14,5 +14,7 @@
         {% else %}
         <p>Error: no BCOE&M environments configured!</p>
         {% endif %}
+
+        <p><a href={{ url_for('backup.show') }}>View Backups</a></p>
     </body>
 </html>

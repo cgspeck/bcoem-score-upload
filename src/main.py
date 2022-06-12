@@ -6,9 +6,10 @@ from functools import wraps
 from src.controllers.clear_scores import clear_scores
 from src.controllers.homepage import homepage
 from src.controllers.upload_scores import upload_scores
+from src.controllers import dir_listing
 
 from src.logging import setup_logger
-from src.utils import ensure_paths_exist
+from src.utils import BACKUP_PATH, ensure_paths_exist
 
 setup_logger()
 
@@ -45,6 +46,12 @@ app.register_blueprint(homepage)
 if app.config["BCOME_ENVS_EXIST"]:
     app.register_blueprint(clear_scores, url_prefix="/clear-scores")
     app.register_blueprint(upload_scores, url_prefix="/upload-scores")
+
+app.register_blueprint(dir_listing.construct_blueprint(
+    dir=BACKUP_PATH,
+    display_name="Backup",
+    name="backup"
+), url_prefix="/backups")
 
 if app.debug:
     pprint(app.url_map)
