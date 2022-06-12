@@ -1,8 +1,5 @@
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Optional, Union
-from unicodedata import category
-
-from attr import field
 
 
 PHPKEY_DBCONFIG_MAP = {

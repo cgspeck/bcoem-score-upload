@@ -1,7 +1,7 @@
 from flask import current_app
 from mysql.connector import MySQLConnection
-
-from src.db import create_connection, execute_backup_query, execute_clear_query, extract_db_config
+from src.db import (create_connection, execute_backup_query,
+                    execute_clear_query, extract_db_config)
 from src.utils import determine_config, save_backup
 
 

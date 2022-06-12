@@ -11,6 +11,7 @@ from src.csv_validate import (
     is_csv,
     try_decode_stream,
 )
+from src.email import EmailReason, send_audit_email
 from src.score_process import load_entries_from_csv, prepare_entries, save_entries
 
 from src.utils import must_be_authorized, save_upload
@@ -87,6 +88,7 @@ def show_form():
         user_name = g.user_name
         user_email = g.user_email
         messages: list[str] = [MESSAGES_HEADER]
+        env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == form.environment.data][0]
         db_config = db_config_for_env_shortname(form.environment.data, messages)
         # env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
 
@@ -109,8 +111,10 @@ def show_form():
             messages.clear()
 
             if not data_valid:
-                yield("Data validation failed!")
+                yield(display_message(m))
+                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path))
                 return
+
             yield(display_message("Data validation succeeded"))
             yield(display_message("Starting backup..."))
             backup_and_clear_scores(cnn, messages)
@@ -132,6 +136,14 @@ def show_form():
             messages.append("")
             messages.append("You may now close this tab")
             messages.append(MESSAGES_FOOTER.format(homepage_path=homepage_path))
+
+            send_audit_email(
+                reason=EmailReason.UploadScores,
+                env_full_name=env_full_name,
+                user_name=user_name,
+                user_email=user_email
+            )
+
             for m in messages:
                 yield(display_message(m))
 
