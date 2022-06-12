@@ -117,7 +117,6 @@ def prepare_entries(cnn: MySQLConnection, entries: list[ScoreEntry], messages: l
 
     return ok
 
-
 def load_entries_from_csv(data: TextIO) -> list[ScoreEntry]:
     memo = []
     data.seek(0)
@@ -135,4 +134,22 @@ def load_entries_from_csv(data: TextIO) -> list[ScoreEntry]:
             sub_category=r["Sub-category"],
             total_score=float(r["Total Score"]),
         ))
+    
+    memo.sort(key=lambda x: x.entry_id)
+
     return memo
+
+def save_entries(cnn: MySQLConnection, entries: list[ScoreEntry]) -> bool:
+    ok = True
+    sql = """
+INSERT INTO judging_scores (eid, bid, scoreTable, scoreEntry, scoreType)
+VALUES (%s, %s, %s, %s, %s)
+"""
+    cursor: MySQLCursor = cnn.cursor()
+
+    for entry in entries:
+        data = (entry.entry_id, entry.brewer_id, entry.score_table, entry.total_score, entry.score_type)
+        cursor.execute(sql, data)
+
+    cnn.commit()
+    return ok

@@ -36,7 +36,7 @@ def is_csv(data: TextIO) -> bool:
     try:
         dialect = csv.Sniffer().sniff(data.read(1024))
     except Exception as e:
-        print(e)
+        pass
     finally:
         data.seek(0)
 

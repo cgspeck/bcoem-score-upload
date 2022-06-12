@@ -56,7 +56,6 @@ def extract_db_config(fp: str) -> DBConfig:
                 memo[config_key] = value
     
     missing = []
-    print(memo)
     
     for k, v in memo.items():
         if v is None:

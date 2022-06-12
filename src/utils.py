@@ -76,7 +76,12 @@ def save_backup(data: list[str], retain_days=DEFAULT_RETENTION_DAYS) -> Path:
     return data_path
 
 
-def save_upload(data: StringIO, retain_days=DEFAULT_RETENTION_DAYS) -> str:
+def save_upload(
+    data: StringIO,
+    user_name: str,
+    user_email: str,
+    retain_days=DEFAULT_RETENTION_DAYS
+    ) -> str:
     """
     Saves upload an metadata about uploader.
     Returns filename.
@@ -87,8 +92,6 @@ def save_upload(data: StringIO, retain_days=DEFAULT_RETENTION_DAYS) -> str:
     data_path.write_text(data.read())
     data.seek(0)
 
-    user_name = g.user_name
-    user_email = g.user_email
     remote_addr = None
 
     if has_request_context():

@@ -14,7 +14,6 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            <p>{{ form.clear_existing.label }} {{ form.clear_existing }}</p>
             {{ form.csv_file.label }} {{ form.csv_file }}
             {% if form.csv_file.errors %}
                 <ul class="errors">
@@ -23,7 +22,7 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            <p>{{ form.confirm.label }} {{ form.confirm }}</p>
+            <p>{{ form.confirm.label }} {{ form.confirm }} <br> {{ form.confirm.description }}</p>
             {% if form.confirm.errors %}
                 <ul class="errors">
                 {% for error in form.confirm.errors %}

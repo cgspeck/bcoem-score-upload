@@ -3,9 +3,8 @@ from wtforms.validators import DataRequired
 from wtforms import BooleanField, RadioField
 from flask_wtf import FlaskForm
 from flask import current_app
-from src.controllers.helpers import get_db_connection
-from src.db import execute_backup_query, execute_clear_query
-from src.utils import must_be_authorized, save_backup
+from src.controllers.helpers import backup_and_clear_scores, db_config_for_env_shortname, get_db_connection
+from src.utils import must_be_authorized
 from src.web_utils import message_log
 
 
@@ -34,12 +33,9 @@ def show_form():
 
     if form.validate_on_submit():
         messages = []
-        cnn = get_db_connection(form.environment.data, messages)
-        backup_res = execute_backup_query(cnn)
-        backup_path = save_backup(backup_res)
-        messages.append(f"Written backup to: {backup_path}")
-        execute_clear_query(cnn)
-        messages.append(f"Cleared out all scores")
+        db_config = db_config_for_env_shortname(form.environment.data, messages)
+        cnn = get_db_connection(db_config, messages)
+        backup_and_clear_scores(cnn, messages)
         return message_log(messages)
 
     return render_template(f"clear_scores_form.html", form=form)
