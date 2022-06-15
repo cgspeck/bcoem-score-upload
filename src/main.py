@@ -13,7 +13,7 @@ from src.utils import BACKUP_PATH, ensure_paths_exist
 
 setup_logger()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static/")
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
 app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")

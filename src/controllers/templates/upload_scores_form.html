@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<head>
-    <title>Score Upload System</title>
-</head>
-    <body>
-        <h1>Upload scores form</h1>
-        <form method="POST" action="{{ url_for('upload_scores.show_form') }}" enctype="multipart/form-data">
-            {{ form.csrf_token }}
-            {{ form.environment.label }} {{ form.environment }}
+{% extends "base.html" %}
+{% block title %}Upload Scores{% endblock %}
+{% block content %}
+    <h1>Upload scores</h1>
+    <form method="POST" action="{{ url_for('upload_scores.show_form') }}" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.environment.label }}
+            <div class="custom-control custom-radio">
+                {% for subfield in form.environment %}
+                    {{ subfield(class="customRadio") }}
+                    {{ subfield.label(class="custom-control-label") }}
+                {% endfor %}
+            </div>
             {% if form.environment.errors %}
                 <ul class="errors">
                 {% for error in form.environment.errors %}
@@ -14,7 +19,9 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            {{ form.csv_file.label }} {{ form.csv_file }}
+            <div>
+                {{ form.csv_file.label }} {{ form.csv_file }}
+            </div>
             {% if form.csv_file.errors %}
                 <ul class="errors">
                 {% for error in form.csv_file.errors %}
@@ -22,7 +29,10 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            <p>{{ form.confirm.label }} {{ form.confirm }} <br> {{ form.confirm.description }}</p>
+            <div class="custom-control custom-checkbox">
+                {{ form.confirm(class="custom-control-input") }} {{ form.confirm.label(class="custom-control-label") }}<br>
+                <small id="confirmHelp" class="form-text">{{ form.confirm.description }}</small>
+            </div>
             {% if form.confirm.errors %}
                 <ul class="errors">
                 {% for error in form.confirm.errors %}
@@ -30,8 +40,8 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            <p><input type="submit" value="Go"></p>
-        </form>
-        <a href={{ url_for('home_page.show') }} >Back to home</a>
-    </body>
-</html>
+            <p><input class="btn btn-primary" type="submit" value="Go"></p>
+        </div>
+    </form>
+    <a href={{ url_for('home_page.show') }} >Back to home</a>
+{% endblock %}

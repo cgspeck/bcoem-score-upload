@@ -1,33 +1,30 @@
-<!DOCTYPE html>
-<head>
-    <title>Score Upload System</title>
-</head>
-    <body>
-        <h1>{{ display_name }} Listing</h1>
-        {% if entries %}
-            <table>
-                <thead>
-                    <th>Name</th>
-                    <th>Size (bytes)</th>
-                    <th>Created</th>
-                </thead>
-                {% for entry in entries %}
-                <tr>
-                    <td>
-                        <a href={{url_for(dl_view_name, filename=entry.name)}}>{{ entry.name }}</a>
-                    </td>
-                    <td>
-                        {{ entry.size }}
-                    </td>
-                    <td>
-                        {{ entry.created_date }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-        {% else %}
-        <p>No files!</p>
-        {% endif %}
-        <a href={{ url_for('home_page.show') }} >Back to home</a>
-    </body>
-</html>
+{% extends "base.html" %}
+{% block title %}File Listing{% endblock %}
+{% block content %}
+    <h1>{{ display_name }} Listing</h1>
+    {% if entries %}
+        <table class="table table-striped">
+            <thead>
+                <th>Name</th>
+                <th>Size (bytes)</th>
+                <th>Created</th>
+            </thead>
+            {% for entry in entries %}
+            <tr>
+                <td>
+                    <a href={{url_for(dl_view_name, filename=entry.name)}}>{{ entry.name }}</a>
+                </td>
+                <td>
+                    {{ entry.size }}
+                </td>
+                <td>
+                    {{ entry.created_date }}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+    <p>No files!</p>
+    {% endif %}
+    <a href={{ url_for('home_page.show') }} >Back to home</a>
+{% endblock %}

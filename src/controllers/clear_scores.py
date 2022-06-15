@@ -3,10 +3,9 @@ from wtforms.validators import DataRequired
 from wtforms import BooleanField, RadioField
 from flask_wtf import FlaskForm
 from flask import current_app
-from src.controllers.helpers import backup_and_clear_scores, db_config_for_env_shortname, get_db_connection
+from src.controllers.helpers import backup_and_clear_scores, db_config_for_env_shortname, get_db_connection, message_log
 from src.email import EmailReason, send_audit_email
 from src.utils import must_be_authorized
-from src.web_utils import message_log
 
 
 clear_scores = Blueprint("clear_scores", __name__, template_folder="templates")
@@ -15,7 +14,7 @@ clear_scores = Blueprint("clear_scores", __name__, template_folder="templates")
 class ClearScoreForm(FlaskForm):
     environment = RadioField(
         "Environment",
-        validators=[DataRequired()],
+        validators=[DataRequired()],   
     )
     confirm = BooleanField("Confirm", validators=[DataRequired()])
 

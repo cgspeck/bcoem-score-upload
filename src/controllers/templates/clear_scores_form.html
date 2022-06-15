@@ -1,12 +1,17 @@
-<!DOCTYPE html>
-<head>
-    <title>Score Upload System</title>
-</head>
-    <body>
-        <h1>Clear Scores</h1>
-        <form method="POST" action="{{ url_for('clear_scores.show_form') }}">
-            {{ form.csrf_token }}
-            {{ form.environment.label }} {{ form.environment }}
+{% extends "base.html" %}
+{% block title %}Clear Scores{% endblock %}
+{% block content %}
+    <h1>Clear Scores</h1>
+    <form method="POST" action="{{ url_for('clear_scores.show_form') }}">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.environment.label }}
+            <div class="custom-control custom-radio">
+                {% for subfield in form.environment %}
+                    {{ subfield(class="customRadio") }}
+                    {{ subfield.label(class="custom-control-label") }}
+                {% endfor %}
+            </div>
             {% if form.environment.errors %}
                 <ul class="errors">
                 {% for error in form.environment.errors %}
@@ -14,17 +19,18 @@
                 {% endfor %}
                 </ul>
             {% endif %}
-            {{ form.confirm.label }} {{ form.confirm }}
-            {% if form.confirm.errors %}
-                <ul class="errors">
-                {% for error in form.confirm.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
-            <p><input type="submit" value="Go"></p>
-        </form>
-
-        <a href={{ url_for('home_page.show') }} >Back to home</a>
-    </body>
-</html>
+        </div>
+        <div class="custom-control custom-checkbox">
+            {{ form.confirm(class="custom-control-input") }} {{ form.confirm.label(class="custom-control-label") }}
+        </div>
+        {% if form.confirm.errors %}
+            <ul class="errors">
+            {% for error in form.confirm.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+        <p><input class="btn btn-primary" type="submit" value="Go"></p>
+    </form>
+    <a href={{ url_for('home_page.show') }} >Back to home</a>
+{% endblock %}

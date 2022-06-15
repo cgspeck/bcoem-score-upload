@@ -1,29 +1,44 @@
-from flask import Blueprint, g, render_template, url_for
-from flask_wtf.file import FileField, FileRequired, FileAllowed, FileSize
-from wtforms.validators import DataRequired
-from wtforms import BooleanField, RadioField
+from flask import Blueprint, current_app, g, render_template, url_for
 from flask_wtf import FlaskForm
-from flask import current_app
-from src.controllers.helpers import backup_and_clear_scores, db_config_for_env_shortname, get_db_connection
-from src.csv_validate import (
-    REQUIRED_HEADERS,
-    has_required_headers,
-    is_csv,
-    try_decode_stream,
-)
+from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
+from src.controllers.helpers import (backup_and_clear_scores,
+                                     db_config_for_env_shortname,
+                                     get_db_connection)
+from src.csv_validate import (REQUIRED_HEADERS, has_required_headers, is_csv,
+                              try_decode_stream)
 from src.email import EmailReason, send_audit_email
-from src.score_process import load_entries_from_csv, prepare_entries, save_entries
-
+from src.score_process import (load_entries_from_csv, prepare_entries,
+                               save_entries)
 from src.utils import must_be_authorized, save_upload
+from wtforms import BooleanField, RadioField
+from wtforms.validators import DataRequired
 
 MESSAGES_HEADER = """
 <!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link 
+            rel="stylesheet"
+            href="{bootstrap_css}"
+        >
+        <link 
+            rel="stylesheet"
+            href="{bootstrap_theme}"
+        >
+        <title>Score Upload System - Upload processing results</title>
+    </head>
 <body>
-    <h1>Message Log</h1>
+    <div class="container">
+        <h1>Message Log</h1>
 """
 
 MESSAGES_FOOTER = """
     <p><a href="{homepage_path}" >Back to home</a></p>
+    </div>
+    <script src="{bootstrap_js}"></script> 
 </body>
 </html>
 """
@@ -83,14 +98,17 @@ def show_form():
 
         if not ok:
             return render_template(f"upload_scores_form.html", form=form)
-        
+
         homepage_path = url_for('home_page.show')
         user_name = g.user_name
         user_email = g.user_email
-        messages: list[str] = [MESSAGES_HEADER]
+        bootstrap_css = url_for('static', filename='css/bootstrap.min.css')
+        bootstrap_theme = url_for('static', filename='css/bootstrap-theme.min.css')
+        bootstrap_js = url_for('static', filename='js/bootstrap.min.js')
+
+        messages: list[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css, bootstrap_theme=bootstrap_theme)]
         env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == form.environment.data][0]
         db_config = db_config_for_env_shortname(form.environment.data, messages)
-        # env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
 
         def stream_process_csv():
             for m in messages:
@@ -112,7 +130,7 @@ def show_form():
 
             if not data_valid:
                 yield(display_message(m))
-                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path))
+                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
                 return
 
             yield(display_message("Data validation succeeded"))
@@ -135,7 +153,7 @@ def show_form():
             messages.append("-" * 20)
             messages.append("")
             messages.append("You may now close this tab")
-            messages.append(MESSAGES_FOOTER.format(homepage_path=homepage_path))
+            messages.append(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
 
             send_audit_email(
                 reason=EmailReason.UploadScores,

@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, render_template
 from mysql.connector import MySQLConnection
 from src.db import (create_connection, execute_backup_query,
                     execute_clear_query, extract_db_config)
@@ -30,3 +30,6 @@ def db_config_for_env_shortname(env_short_name, messages):
     messages.append(f"Loading config from {config_file}")
     db_config = extract_db_config(config_file)
     return db_config
+
+def message_log(messages: list[str]):
+    return render_template("message_log.html", messages=messages)
