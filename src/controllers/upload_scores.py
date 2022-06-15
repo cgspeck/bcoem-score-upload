@@ -24,10 +24,6 @@ MESSAGES_HEADER = """
             rel="stylesheet"
             href="{bootstrap_css}"
         >
-        <link 
-            rel="stylesheet"
-            href="{bootstrap_theme}"
-        >
         <title>Score Upload System - Upload processing results</title>
     </head>
 <body>
@@ -103,10 +99,9 @@ def show_form():
         user_name = g.user_name
         user_email = g.user_email
         bootstrap_css = url_for('static', filename='css/bootstrap.min.css')
-        bootstrap_theme = url_for('static', filename='css/bootstrap-theme.min.css')
         bootstrap_js = url_for('static', filename='js/bootstrap.min.js')
 
-        messages: list[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css, bootstrap_theme=bootstrap_theme)]
+        messages: list[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css)]
         env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == form.environment.data][0]
         db_config = db_config_for_env_shortname(form.environment.data, messages)
 

@@ -6,12 +6,12 @@
         {{ form.csrf_token }}
         <div class="form-group">
             {{ form.environment.label }}
-            <div class="custom-control custom-radio">
-                {% for subfield in form.environment %}
-                    {{ subfield(class="customRadio") }}
-                    {{ subfield.label(class="custom-control-label") }}
-                {% endfor %}
-            </div>
+            {% for subfield in form.environment %}
+                <div class="form-check">
+                    {{ subfield(class="form-check-input") }}
+                    {{ subfield.label(class="form-check-label") }}
+                </div>
+            {% endfor %}
             {% if form.environment.errors %}
                 <ul class="errors">
                 {% for error in form.environment.errors %}
