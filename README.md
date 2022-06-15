@@ -18,6 +18,10 @@ flask run
 
 Go to http://localhost:5000
 
+## `update.sh`
+
+You can use this script to deploy/update the app from the github repo.
+
 ## `passenger_wsgi.py`
 
 This has nothing to do with the solution at all, but Westgate's shared hosting provider requires this file. It seems to serve as the application entry point.
