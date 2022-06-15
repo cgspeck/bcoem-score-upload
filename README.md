@@ -18,3 +18,6 @@ flask run
 
 Go to http://localhost:5000
 
+## `passenger_wsgi.py`
+
+This has nothing to do with the solution at all, but Westgate's shared hosting provider requires this file. It seems to serve as the application entry point.
