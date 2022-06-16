@@ -1,10 +1,9 @@
-
-
 from typing import Dict, Union
 
-import mysql.connector
-from mysql.connector import MySQLConnection
-from mysql.connector.cursor import MySQLCursor
+import mysql.connector  # type: ignore
+from mysql.connector import MySQLConnection  # type: ignore
+from mysql.connector.cursor import MySQLCursor  # type: ignore
+from src.csv_validate import REQUIRED_HEADERS
 
 from src.datadefs import DBConfig, PHPKEY_DBCONFIG_MAP
 
@@ -64,13 +63,13 @@ def extract_db_config(fp: str) -> DBConfig:
     if len(missing) > 0:
         raise ValueError(f"Missing config for {missing} in {fp}")
     
-    return DBConfig(**memo)
+    return DBConfig(**memo)  # type: ignore
 
 def create_connection(db_config: DBConfig) -> MySQLConnection:
     return mysql.connector.connect(**db_config.to_dict())
 
 def execute_backup_query(cnn: MySQLConnection) -> list[str]:
-    """Returns a CSV (in list of str form) of data required to restore scores table
+    """Returns a CSV (in list of str form) of data required to restore scores table with header row
 
     Args:
         cnn (MySQLConnection): MySQL Connection Object
@@ -80,8 +79,7 @@ def execute_backup_query(cnn: MySQLConnection) -> list[str]:
     """
     cursor: MySQLCursor = cnn.cursor()
     cursor.execute(BACKUP_SQL)
-    memo: list[str] = []
-    memo.append(",".join(cursor.column_names))
+    memo: list[str] = [",".join(REQUIRED_HEADERS)]
     
     for row in cursor.fetchall():
         memo.append(",".join([str(r) for r  in row]))

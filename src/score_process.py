@@ -1,7 +1,7 @@
 import csv
 from typing import Dict, TextIO
-from mysql.connector import MySQLConnection
-from mysql.connector.cursor import MySQLCursor
+from mysql.connector import MySQLConnection  # type: ignore
+from mysql.connector.cursor import MySQLCursor  # type: ignore
 
 from src.datadefs import ScoreEntry, make_cat_subcat_key
 from src.utils import format_error_message

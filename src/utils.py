@@ -2,11 +2,12 @@ from datetime import datetime
 from io import StringIO
 from pathlib import Path
 import time
+from typing import Optional
 from flask import abort, g, has_request_context, redirect, request, url_for, current_app
-from flask_dance.contrib.google import google
+from flask_dance.contrib.google import google  # type: ignore
 from functools import wraps
 
-import oauthlib
+import oauthlib  # type: ignore
 
 BACKUP_PATH = Path("data/backups").resolve()
 UPLOAD_PATH = Path("data/uploads").resolve()
@@ -68,8 +69,11 @@ def must_be_authorized(f):
 
     return decorated
 
-def save_backup(data: list[str], retain_days=DEFAULT_RETENTION_DAYS) -> Path:
-    base_filename = time.time()
+def save_backup(
+    data: list[str],
+    env_short_name: str,
+    retain_days=DEFAULT_RETENTION_DAYS) -> Path:
+    base_filename = f"{time.time()}.{env_short_name}"
     data_path = Path(BACKUP_PATH, f"{base_filename}.csv")
     data_path.write_text("\n".join(data))
     cleanup(BACKUP_PATH, retain_days)
@@ -80,29 +84,26 @@ def save_upload(
     data: StringIO,
     user_name: str,
     user_email: str,
+    env_short_name: str,
+    remote_addr: Optional[str] = None,
     retain_days=DEFAULT_RETENTION_DAYS
     ) -> str:
     """
     Saves upload an metadata about uploader.
     Returns filename.
     """
-    base_filename = time.time()
+    base_filename = f"{time.time()}.{env_short_name}"
     data_path = Path(UPLOAD_PATH, f"{base_filename}.csv")
     meta_path = Path(UPLOAD_PATH, f"{base_filename}.meta.txt")
     data_path.write_text(data.read())
     data.seek(0)
-
-    remote_addr = None
-
-    if has_request_context():
-        remote_addr = request.remote_addr
 
     meta_payload = f"""
 Date: {datetime.now()}
 User Name: {user_name}
 User Email: {user_email}
 Remote Address: {remote_addr}
-    """
+"""
     meta_path.write_text(meta_payload)
     cleanup(UPLOAD_PATH, retain_days)
     return data_path.name

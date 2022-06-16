@@ -1,15 +1,14 @@
 import os
 from pprint import pprint
-from flask import Flask, abort, g, redirect, url_for
-from flask_dance.contrib.google import make_google_blueprint
-from functools import wraps
+from flask import Flask
+from flask_dance.contrib.google import make_google_blueprint  # type: ignore
 from src.controllers.clear_scores import clear_scores
 from src.controllers.homepage import homepage
 from src.controllers.upload_scores import upload_scores
 from src.controllers import dir_listing
 
 from src.logging import setup_logger
-from src.utils import BACKUP_PATH, ensure_paths_exist
+from src.utils import BACKUP_PATH, UPLOAD_PATH, ensure_paths_exist
 
 setup_logger()
 
@@ -52,6 +51,12 @@ app.register_blueprint(dir_listing.construct_blueprint(
     display_name="Backup",
     name="backup"
 ), url_prefix="/backups")
+
+app.register_blueprint(dir_listing.construct_blueprint(
+    dir=UPLOAD_PATH,
+    display_name="Uploads",
+    name="uploads"
+), url_prefix="/uploads")
 
 if app.debug:
     pprint(app.url_map)

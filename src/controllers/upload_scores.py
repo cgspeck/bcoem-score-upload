@@ -1,17 +1,23 @@
-from flask import Blueprint, current_app, g, render_template, url_for
-from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileField, FileRequired, FileSize
+from typing import Optional
+from flask import Blueprint, current_app, g, render_template, request, url_for
+from flask_wtf import FlaskForm  # type: ignore
+from flask_wtf.file import (FileAllowed, FileField,  # type: ignore
+                            FileRequired, FileSize)
+from wtforms import BooleanField, RadioField  # type: ignore
+from wtforms.validators import DataRequired  # type: ignore
+from mysql.connector import MySQLConnection  # type: ignore
+
 from src.controllers.helpers import (backup_and_clear_scores,
                                      db_config_for_env_shortname,
                                      get_db_connection)
 from src.csv_validate import (REQUIRED_HEADERS, has_required_headers, is_csv,
                               try_decode_stream)
+from src.datadefs import ScoreEntry
 from src.email import EmailReason, send_audit_email
 from src.score_process import (load_entries_from_csv, prepare_entries,
                                save_entries)
 from src.utils import must_be_authorized, save_upload
-from wtforms import BooleanField, RadioField
-from wtforms.validators import DataRequired
+
 
 MESSAGES_HEADER = """
 <!DOCTYPE html>
@@ -102,35 +108,54 @@ def show_form():
         bootstrap_js = url_for('static', filename='js/bootstrap.min.js')
 
         messages: list[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css)]
-        env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == form.environment.data][0]
-        db_config = db_config_for_env_shortname(form.environment.data, messages)
+        env_short_name = form.environment.data
+        env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
+        db_config = db_config_for_env_shortname(env_short_name, messages)
+        remote_addr = request.remote_addr
 
         def stream_process_csv():
             for m in messages:
                 yield(display_message(m))
             messages.clear()
-            filename = save_upload(t_io, user_name, user_email)
+
+            filename = save_upload(t_io, user_name, user_email, env_short_name, remote_addr)
             yield(display_message(f"Saved upload to {filename}"))
-            entries = load_entries_from_csv(t_io)
+
+            entries: list[ScoreEntry] = []
+
+            try:
+                entries = load_entries_from_csv(t_io)
+            except Exception as e:
+                yield(f"Error loading CSV: {e}")
+                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
+                return
+
             yield(display_message(f"Loaded entries from CSV"))
-            cnn = get_db_connection(db_config, messages)
-            for m in messages:
-                yield(display_message(m))
-            messages.clear()
+
+            cnn: Optional[MySQLConnection] = None
+
+            try:
+                cnn = get_db_connection(db_config)
+            except Exception as e:
+                yield(f"Error connecting to database: {e}")
+                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
+                return
+
+            yield(display_message("Connected to DB."))
             yield(display_message(f"Starting data validation..."))
+
             data_valid = prepare_entries(cnn, entries, messages)
             for m in messages:
                 yield(display_message(m))
             messages.clear()
 
             if not data_valid:
-                yield(display_message(m))
                 yield(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
                 return
 
             yield(display_message("Data validation succeeded"))
             yield(display_message("Starting backup..."))
-            backup_and_clear_scores(cnn, messages)
+            backup_and_clear_scores(cnn, env_short_name, messages)
             for m in messages:
                 yield(display_message(m))
             messages.clear()

@@ -36,7 +36,7 @@ def construct_blueprint(name: str, dir: Path, display_name:str):
                 
             ))
 
-        memo.sort(key=lambda x: x.created_date, reverse=True)
+        memo.sort(key=lambda x: x.name, reverse=True)
 
         return render_template(
             "dir_listing.html",
