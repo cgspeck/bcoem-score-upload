@@ -8,7 +8,7 @@ from src.controllers.upload_scores import upload_scores
 from src.controllers import dir_listing
 
 from src.logging import setup_logger
-from src.utils import BACKUP_PATH, UPLOAD_PATH, ensure_paths_exist
+from src.utils import BACKUP_PATH, UPLOAD_PATH, ensure_paths_exist, resolve_htaccess_path
 
 setup_logger()
 
@@ -22,9 +22,11 @@ bcome_env_choices = []
 
 if app.config["BCOME_TEST_CONF"] is not None:
     bcome_env_choices.append(("test", "Test Environment"))
+    app.config["BCOME_TEST_HTACCESS"] = resolve_htaccess_path(app.config["BCOME_TEST_CONF"])
     
 if app.config["BCOME_PROD_CONF"] is not None:
     bcome_env_choices.append(("prod", "Production Environment"))
+    app.config["BCOME_PROD_HTACCESS"] = resolve_htaccess_path(app.config["BCOME_PROD_CONF"])
 
 app.config["BCOME_ENV_CHOICES"] = bcome_env_choices
 app.config["BCOME_ENVS_EXIST"] = (

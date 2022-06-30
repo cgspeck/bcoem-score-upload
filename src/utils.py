@@ -69,6 +69,9 @@ def must_be_authorized(f):
 
     return decorated
 
+def resolve_htaccess_path(conf_path: str) -> Path:
+    return Path(conf_path, '../../htaccess')
+
 def save_backup(
     data: list[str],
     env_short_name: str,
