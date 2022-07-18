@@ -30,6 +30,10 @@ def determine_config(env: str):
     
     raise ValueError(f"Unknoen env: '{env}'")
 
+def determine_root(env: str) -> Path:
+    conf_path = determine_config(env)
+    return Path(conf_path, "../../").resolve().absolute()
+
 def ensure_paths_exist():
     BACKUP_PATH.mkdir(parents=True, exist_ok=True)
     UPLOAD_PATH.mkdir(parents=True, exist_ok=True)

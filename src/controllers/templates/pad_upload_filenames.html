@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Zero Pad Upload Filenames{% endblock %}
+{% block content %}
+    <h1>Zero Pad Upload Filenames</h1>
+    <p>This will add padding zeros to upload file names as required by BCOE&M</p>
+    <form method="POST" action="{{ url_for('pad_upload_filenames.show_form') }}">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.environment.label }}
+            {% for subfield in form.environment %}
+                <div class="form-check">
+                    {{ subfield(class="form-check-input") }}
+                    {{ subfield.label(class="form-check-label") }}
+                </div>
+            {% endfor %}
+            {% if form.environment.errors %}
+                <ul class="errors">
+                {% for error in form.environment.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <p><input class="btn btn-primary" type="submit" value="Go"></p>
+    </form>
+    <a href={{ url_for('home_page.show') }} >Back to home</a>
+{% endblock %}
