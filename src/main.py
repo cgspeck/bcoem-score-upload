@@ -5,6 +5,7 @@ from flask_dance.contrib.google import make_google_blueprint  # type: ignore
 from src.controllers.clear_scores import clear_scores
 from src.controllers.homepage import homepage
 from src.controllers.upload_scores import upload_scores
+from src.controllers.pad_upload_filenames import pad_upload_filenames
 from src.controllers import dir_listing
 
 from src.logging import setup_logger
@@ -57,6 +58,8 @@ app.register_blueprint(dir_listing.construct_blueprint(
     display_name="Uploads",
     name="uploads"
 ), url_prefix="/uploads")
+
+app.register_blueprint(pad_upload_filenames, url_prefix="/zero-pad-uploaded-scoresheets")
 
 if app.debug:
     pprint(app.url_map)
