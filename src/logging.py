@@ -29,7 +29,7 @@ class ExFormatter(logging.Formatter):
         "threadName",
     ]
 
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         string = super().format(record)
         extra = {k: v for k, v in record.__dict__.items() if k not in self.def_keys}
 
@@ -42,7 +42,7 @@ class ExFormatter(logging.Formatter):
         return string
 
 
-def setup_logger():
+def setup_logger() -> None:
     dictConfig(
         {
             "version": 1,

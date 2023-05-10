@@ -15,13 +15,13 @@ UPLOAD_PATH = Path("data/uploads").resolve()
 SECONDS_PER_DAY = 86400
 DEFAULT_RETENTION_DAYS = 3 * 365
 
-def cleanup(dir: Path, retain_days: int):
+def cleanup(dir: Path, retain_days: int) -> None:
     threshold = time.time() - (retain_days * SECONDS_PER_DAY)
     for p in dir.iterdir():
         if p.is_file() and p.stat().st_ctime < threshold:
             p.unlink()
 
-def determine_config(env: str):
+def determine_config(env: str) -> str:
     if env == "test":
         return current_app.config["BCOME_TEST_CONF"]
     
@@ -34,20 +34,20 @@ def determine_root(env: str) -> Path:
     conf_path = determine_config(env)
     return Path(conf_path, "../../").resolve().absolute()
 
-def ensure_paths_exist():
+def ensure_paths_exist() -> None:
     BACKUP_PATH.mkdir(parents=True, exist_ok=True)
     UPLOAD_PATH.mkdir(parents=True, exist_ok=True)
 
-def format_error_message(msg: str, messages: list[str]):
+def format_error_message(msg: str, messages: list[str]) -> None:
     messages.append("")
     messages.append("ERROR!!!")
     messages.append("-" * 20)
     messages.append(msg)
     messages.append("-" * 20)
 
-def must_be_authorized(f):
+def must_be_authorized(f):  # type: ignore
     @wraps(f)
-    def decorated(*args, **kwargs):
+    def decorated(*args, **kwargs):  # type: ignore
         if not google.authorized:
             return redirect(url_for("google.login"))
         
@@ -76,7 +76,7 @@ def must_be_authorized(f):
 def save_backup(
     data: list[str],
     env_short_name: str,
-    retain_days=DEFAULT_RETENTION_DAYS) -> Path:
+    retain_days: int=DEFAULT_RETENTION_DAYS) -> Path:
     base_filename = f"{time.time()}.{env_short_name}"
     data_path = Path(BACKUP_PATH, f"{base_filename}.csv")
     data_path.write_text("\n".join(data))
@@ -90,7 +90,7 @@ def save_upload(
     user_email: str,
     env_short_name: str,
     remote_addr: Optional[str] = None,
-    retain_days=DEFAULT_RETENTION_DAYS
+    retain_days: int=DEFAULT_RETENTION_DAYS
     ) -> str:
     """
     Saves upload an metadata about uploader.

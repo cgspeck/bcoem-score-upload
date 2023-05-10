@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 import datetime
+from os import PathLike
 from pathlib import Path
-from flask import Blueprint, render_template, send_from_directory
+from typing import Union
+from flask import Blueprint, Response, render_template, send_from_directory
 
 from src.utils import must_be_authorized
 
@@ -11,19 +13,19 @@ class FileListEntry:
     size: int
     created_date: datetime.datetime
 
-def construct_blueprint(name: str, dir: Path, display_name:str):
+def construct_blueprint(name: str, dir: Path, display_name:str) -> Blueprint:
     bp = Blueprint(name, __name__, template_folder="templates")
 
 
     @bp.before_request
     @must_be_authorized
-    def before_request():
+    def before_request() -> None:
         """Protect all of the admin endpoints."""
         pass
 
 
     @bp.route("/")
-    def show():
+    def show() -> str:
         memo = []
         for p in dir.iterdir():
             st_info = p.stat()
@@ -46,7 +48,7 @@ def construct_blueprint(name: str, dir: Path, display_name:str):
         )
     
     @bp.route("/<path:filename>")
-    def download(filename):
+    def download(filename: Union[PathLike, str]) -> Response:
         return send_from_directory(dir, filename, as_attachment=True)
     
     return(bp)

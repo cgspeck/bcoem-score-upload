@@ -8,11 +8,11 @@ homepage = Blueprint("home_page", __name__, template_folder="templates")
 
 @homepage.before_request
 @must_be_authorized
-def before_request():
+def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
 
 
 @homepage.route("/")
-def show():
+def show() -> str:
     return render_template(f"home.html")

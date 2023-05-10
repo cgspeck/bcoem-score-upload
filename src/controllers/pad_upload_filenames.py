@@ -2,7 +2,7 @@ from pathlib import Path
 from flask import Blueprint, current_app, render_template
 from flask_wtf import FlaskForm  # type: ignore
 from wtforms import RadioField  # type: ignore
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired  # type: ignore
 from src.controllers.helpers import message_log  # type: ignore
 
 from src.utils import determine_root, must_be_authorized
@@ -20,13 +20,13 @@ class PadUploadFilenamesForm(FlaskForm):
 
 @pad_upload_filenames.before_request
 @must_be_authorized
-def before_request():
+def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
 
 
 @pad_upload_filenames.route("/", methods=["GET", "POST"])
-def show_form():
+def show_form() -> str:
     form = PadUploadFilenamesForm()
     form.environment.choices = current_app.config["BCOME_ENV_CHOICES"]
 
@@ -42,7 +42,7 @@ def show_form():
             messages.append(f"Path '{user_docs}' does not exist!")
             initalize_errors = True
             
-        if not user_docs.is_dir:
+        if not user_docs.is_dir():
             messages.append(f"Path '{user_docs}' is not a folder!")
             initalize_errors = True
         
