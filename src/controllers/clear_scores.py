@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from flask import Blueprint, current_app, g, render_template
 from flask_wtf import FlaskForm  # type: ignore
 from wtforms import BooleanField, RadioField  # type: ignore
@@ -24,13 +24,13 @@ class ClearScoreForm(FlaskForm):
 
 @clear_scores.before_request
 @must_be_authorized
-def before_request():
+def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
 
 
 @clear_scores.route("/", methods=["GET", "POST"])
-def show_form():
+def show_form() -> str:
     form = ClearScoreForm()
     form.environment.choices = current_app.config["BCOME_ENV_CHOICES"]
 
@@ -40,7 +40,7 @@ def show_form():
         env_short_name = form.environment.data
         env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
 
-        messages = []
+        messages: List[str] = []
         db_config = db_config_for_env_shortname(env_short_name, messages)
         cnn: Optional[MySQLConnection] = None
 

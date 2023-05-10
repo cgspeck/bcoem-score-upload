@@ -1,5 +1,5 @@
-from typing import Optional
-from flask import Blueprint, current_app, g, render_template, request, url_for
+from typing import Any, Generator, Optional, Union
+from flask import Blueprint, Response, abort, current_app, g, render_template, request, url_for
 from flask_wtf import FlaskForm  # type: ignore
 from flask_wtf.file import (FileAllowed, FileField,  # type: ignore
                             FileRequired, FileSize)
@@ -46,7 +46,7 @@ MESSAGES_FOOTER = """
 """
 upload_scores = Blueprint("upload_scores", __name__, template_folder="templates")
 
-def display_message(message: str):
+def display_message(message: str) -> str:
     return f"<p>{message}</p>"
 
 class UploadScoreForm(FlaskForm):
@@ -71,13 +71,13 @@ class UploadScoreForm(FlaskForm):
 
 @upload_scores.before_request
 @must_be_authorized
-def before_request():
+def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
 
 
 @upload_scores.route("/", methods=["GET", "POST"])
-def show_form():
+def show_form() -> Union[str, Response]:
     form = UploadScoreForm()
     form.environment.choices = current_app.config["BCOME_ENV_CHOICES"]
 
@@ -113,10 +113,13 @@ def show_form():
         db_config = db_config_for_env_shortname(env_short_name, messages)
         remote_addr = request.remote_addr
 
-        def stream_process_csv():
+        def stream_process_csv() -> Generator[str, Any, None]:
             for m in messages:
                 yield(display_message(m))
             messages.clear()
+
+            if t_io is None:
+                abort(500, "Expected a stream")
 
             filename = save_upload(t_io, user_name, user_email, env_short_name, remote_addr)
             yield(display_message(f"Saved upload to {filename}"))

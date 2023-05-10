@@ -7,10 +7,9 @@ from src.datadefs import ScoreEntry, make_cat_subcat_key
 from src.utils import format_error_message
 
 
-def get_brewer_ids(cnn: MySQLConnection, entries: list[ScoreEntry]):
+def get_brewer_ids(cnn: MySQLConnection, entries: list[ScoreEntry]) -> None:
     '''
-    Retrieves brewer IDs for a list of entries and
-    sets them in place
+    Retrieves brewer IDs for a list of entries and sets them in place
     '''
     
     entry_id_brewer_id_map: Dict[int, int] = {}
@@ -30,7 +29,7 @@ ORDER BY id ASC;
         entry.brewer_id = entry_id_brewer_id_map.get(entry.entry_id)
 
 
-def get_judging_tables(cnn: MySQLConnection, entries: list[ScoreEntry]):
+def get_judging_tables(cnn: MySQLConnection, entries: list[ScoreEntry]) -> None:
     '''
     Retrieves judging table ids / 'score_table' for list of score entries and
     sets them in place
@@ -60,7 +59,7 @@ def get_prefs_style_set(cnn: MySQLConnection) -> str:
     cursor.execute(sql)
     return cursor.fetchone()[0]
 
-def get_style_ids(cnn: MySQLConnection, entries: list[ScoreEntry], messages: list[str]):
+def get_style_ids(cnn: MySQLConnection, entries: list[ScoreEntry], messages: list[str]) -> None:
     '''
     Retrieves style ids for list of score entries and
     sets them in place

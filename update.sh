@@ -4,7 +4,7 @@ BRANCH=${1:-main}
 URL="https://www.github.com/cgspeck/bcoem-score-upload/archive/refs/heads/${BRANCH}.zip"
 
 echo -e "Score uploader update script"
-echo -e "\nSelect branch: ${BRANCH}\n"
+echo -e "\nSelected branch: ${BRANCH}\n"
 echo -e "This will download the archive from '${URL}', unzip it, and copy the files present in the zip over those in the current directory\n"
 
 # many ways to skin a cat!

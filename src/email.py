@@ -53,7 +53,7 @@ def send_audit_email(
     env_full_name: str,
     user_name: str,
     user_email: str
-    ):
+    ) -> None:
     email_enabled = environ.get("EMAIL_ENABLED", "false") == "true"
     
     if not email_enabled:

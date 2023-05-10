@@ -50,5 +50,5 @@ class ScoreEntry:
 
     score_type: int = 1 # 'scoreType'
     
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.style_key = make_cat_subcat_key(self.category, self.sub_category)
