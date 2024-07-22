@@ -3,7 +3,7 @@ from io import StringIO
 from pathlib import Path
 import time
 from typing import Optional
-from flask import abort, g, has_request_context, redirect, request, url_for, current_app
+from flask import abort, g, redirect, url_for, current_app
 from flask_dance.contrib.google import google  # type: ignore
 from functools import wraps
 
@@ -48,6 +48,11 @@ def format_error_message(msg: str, messages: list[str]) -> None:
 def must_be_authorized(f):  # type: ignore
     @wraps(f)
     def decorated(*args, **kwargs):  # type: ignore
+        if current_app.config["BYPASS_OAUTH"]:
+            g.user_email = 'dev@example.com'
+            g.user_name = 'Developer User'
+            return f(*args, **kwargs)
+
         if not google.authorized:
             return redirect(url_for("google.login"))
         

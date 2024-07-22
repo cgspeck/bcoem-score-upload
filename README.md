@@ -13,7 +13,7 @@ pyenv install
 pip install -r requirements-dev.txt
 cp .env.example .env
 # set vars in .env
-flask run
+flask run --debug
 ```
 
 Go to http://localhost:5000

@@ -19,6 +19,7 @@ app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
 app.config["BCOME_TEST_CONF"] = os.environ.get("BCOME_TEST_CONF")
 app.config["BCOME_PROD_CONF"] = os.environ.get("BCOME_PROD_CONF")
+app.config["BYPASS_OAUTH"] = os.environ.get('BYPASS_OAUTH', 'false') == 'true'
 bcome_env_choices = []
 
 if app.config["BCOME_TEST_CONF"] is not None:
