@@ -1,4 +1,3 @@
-import logging
 from pytest_snapshot.plugin import Snapshot  # type: ignore
 
 from src.db import extract_db_config
