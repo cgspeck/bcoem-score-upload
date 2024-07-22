@@ -5,6 +5,7 @@
         <p>Welcome {{ g.user_name }}</p>
 
         {% if config.BCOME_ENVS_EXIST  %}
+        <h2>Score Entry Management</h2>
 
         <p><a href={{ url_for('clear_scores.show_form') }} >Clear scores</a></p>
 
@@ -17,5 +18,14 @@
 
         <p><a href={{ url_for('uploads.show') }}>View Uploads</a></p>
 
+        <h2>Score Sheet Management</h2>
         <p><a href={{ url_for('pad_upload_filenames.show_form') }}>Zero Pad Uploaded Scroresheet Filenames</a></p>
+
+        <h2>Reports</h2>
+
+        <p><a href={{ url_for('pullsheets.show', comp_env='test') }}>Pull Sheets (test)</a></p>
+
+        <p><a href={{ url_for('pullsheets.show', comp_env='prod') }}>Pull Sheets (prod)</a></p>
+
+
 {% endblock %}

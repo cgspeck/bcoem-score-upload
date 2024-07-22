@@ -6,6 +6,7 @@ from src.controllers.clear_scores import clear_scores
 from src.controllers.homepage import homepage
 from src.controllers.upload_scores import upload_scores
 from src.controllers.pad_upload_filenames import pad_upload_filenames
+from src.controllers.pullsheets import pullsheets
 from src.controllers import dir_listing
 
 from src.logging import setup_logger
@@ -61,6 +62,8 @@ app.register_blueprint(dir_listing.construct_blueprint(
 ), url_prefix="/uploads")
 
 app.register_blueprint(pad_upload_filenames, url_prefix="/zero-pad-uploaded-scoresheets")
+
+app.register_blueprint(pullsheets, url_prefix="/pullsheets")
 
 if app.debug:
     pprint(app.url_map)

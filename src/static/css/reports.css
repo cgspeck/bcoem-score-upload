@@ -1,0 +1,20 @@
+@page {
+  size: "A4"; /* auto is the initial value */
+  /* this affects the margin in the printer settings */
+  margin: 15mm 15mm 15mm 15mm;
+}
+
+body {
+  /* this affects the margin on the content before sending to printer */
+  margin: 0px;
+}
+
+@media print {
+  hr {
+    page-break-after: always;
+  }
+
+  .container {
+    max-width: none;
+  }
+}

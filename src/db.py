@@ -45,7 +45,7 @@ def extract_db_config(fp: str) -> DBConfig:
                     value = value.strip()
                     value = value.strip(";")
                     value = value.strip("'")
-                    value = value.strip('"')                
+                    value = value.strip('"')
                     if value == "ini_get('mysqli.default_port')":
                         value = "3306"
                 
@@ -66,7 +66,7 @@ def extract_db_config(fp: str) -> DBConfig:
     return DBConfig(**memo)  # type: ignore
 
 def create_connection(db_config: DBConfig) -> MySQLConnection:
-    return mysql.connector.connect(**db_config.to_dict())
+    return mysql.connector.connect(collation="utf8mb4_unicode_ci", **db_config.to_dict())
 
 def execute_backup_query(cnn: MySQLConnection) -> list[str]:
     """Returns a CSV (in list of str form) of data required to restore scores table with header row

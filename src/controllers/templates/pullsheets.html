@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Pullsheets - {{ env_full_name }}{% endblock %}
+{% block content %}
+<link 
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/reports.css') }}"
+>
+<!-- <h1>Score Upload System</h1>
+<p>Welcome {{ g.user_name }}</p>
+
+{% if config.BCOME_ENVS_EXIST  %}
+<h2>Score Entry Management</h2>
+
+<p><a href={{ url_for('clear_scores.show_form') }} >Clear scores</a></p>
+
+<p><a href={{ url_for('upload_scores.show_form') }} >Upload scores</a></p>
+{% else %}
+<p>Error: no BCOE&M environments configured!</p>
+{% endif %}
+
+<p><a href={{ url_for('backup.show') }}>View Backups</a></p>
+
+<p><a href={{ url_for('uploads.show') }}>View Uploads</a></p>
+
+<h2>Score Sheet Management</h2>
+<p><a href={{ url_for('pad_upload_filenames.show_form') }}>Zero Pad Uploaded Scroresheet Filenames</a></p>
+
+<h2>Reports</h2>
+
+<p>Pull Sheets (test)</p>
+
+<p>Pull Sheets (prod)</p> -->
+{% for table in tables %}
+  <h2>Table {{ loop.index }}: {{ table.category | capitalize }}</h2>
+  {% if table.entries | length > 0 %}
+    <table class="table table-striped table-bordered table-sm">
+      <thead>
+        <tr>
+          <th>Entry No/<br/>Pull Order</th>
+          <th>Style</th>
+          <th>Notes</th>
+          <th>Time Out</th>
+          <th>Time In</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in table.entries %}
+        <tr>
+          <td scope="row">
+            {{ entry.entry_number }}
+          </td>
+          <td>
+            {{ entry.style | capitalize }}
+          </td>
+          <td>
+            {% if entry.required_info is not none and entry.required_info | length > 0 %}
+              <strong>Required Info:</strong> {{ entry.required_info }}<br/>
+            {% endif %}
+            {% if entry.possible_allergens is not none and entry.possible_allergens | length > 0 %}
+              <strong>Possible Allergens:</strong> {{ entry.possible_allergens }}<br/>
+            {% endif %}
+            {% if entry.abv is not none %}
+              <strong>ABV:</strong> {{ '%0.2f'| format(entry.abv) }}%<br/>
+            {% endif %}
+            {% if entry.pouring_speed is not none %}
+              <strong>Pouring Speed:</strong> {{ entry.pouring_speed }}<br/>
+            {% endif %}
+            {% if entry.pouring_notes is not none %}
+              <strong>Pouring Notes:</strong> {{ entry.pouring_notes }}<br/>
+            {% endif %}
+            {% if entry.rouse_yeast is not none %}
+              <strong>Rouse Yeast:</strong> {{ entry.rouse_yeast }}<br/>
+            {% endif %}
+          </td>
+          <td>
+          </td>
+          <td>
+          </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  {% else %}
+    There are no entries for this table.
+  {% endif %}
+  <hr class="page-break"/>
+{% endfor %}
+{% endblock %}
