@@ -28,7 +28,7 @@ def determine_config(env: str) -> str:
     if env == "prod":
         return current_app.config["BCOME_PROD_CONF"]
     
-    raise ValueError(f"Unknoen env: '{env}'")
+    raise ValueError(f"Unknown env: '{env}'")
 
 def determine_root(env: str) -> Path:
     conf_path = determine_config(env)

@@ -30,22 +30,5 @@ def show() -> str:
         messages.append(f"Error connecting to database: {e}")
         return message_log(messages)
 
-    # tables = [
-    #     Table("Porter Table", [
-    #         Entry(
-    #             1,
-    #             "12.23 Some Style",
-    #             "Here is the base info for riggers",
-    #             5.9688888,
-    #             None,
-    #             None,
-    #             None,
-    #             None
-    #         )
-    #     ]),
-    #     Table("Stout Table", []),
-    #     Table("Strong stout Table", []),
-    #     Table("Specialty Table", []),
-    # ]
     tables = get_data(cnn)
     return render_template(f"pullsheets.html", env_full_name=env_full_name, tables=tables)

@@ -1,4 +1,5 @@
 {
+  "collation": "utf8mb4_unicode_ci",
   "database": "db",
   "host": "localhost",
   "password": "db_password",

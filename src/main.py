@@ -20,12 +20,15 @@ app.config["GOOGLE_OAUTH_CLIENT_ID"] = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
 app.config["BCOME_TEST_CONF"] = os.environ.get("BCOME_TEST_CONF")
 app.config["BCOME_PROD_CONF"] = os.environ.get("BCOME_PROD_CONF")
-app.config["BYPASS_OAUTH"] = os.environ.get('BYPASS_OAUTH', 'false') == 'true'
+app.config["BYPASS_OAUTH"] = os.environ.get("BYPASS_OAUTH", "false") == "true"
+app.config["AUTOMIGRATIONS_ENABLED"] = (
+    os.environ.get("AUTOMIGRATIONS_ENABLED", "true") == "true"
+)
 bcome_env_choices = []
 
 if app.config["BCOME_TEST_CONF"] is not None:
     bcome_env_choices.append(("test", "Test Environment"))
-    
+
 if app.config["BCOME_PROD_CONF"] is not None:
     bcome_env_choices.append(("prod", "Production Environment"))
 
@@ -49,19 +52,23 @@ if app.config["BCOME_ENVS_EXIST"]:
     app.register_blueprint(clear_scores, url_prefix="/clear-scores")
     app.register_blueprint(upload_scores, url_prefix="/upload-scores")
 
-app.register_blueprint(dir_listing.construct_blueprint(
-    dir=BACKUP_PATH,
-    display_name="Backup",
-    name="backup"
-), url_prefix="/backups")
+app.register_blueprint(
+    dir_listing.construct_blueprint(
+        dir=BACKUP_PATH, display_name="Backup", name="backup"
+    ),
+    url_prefix="/backups",
+)
 
-app.register_blueprint(dir_listing.construct_blueprint(
-    dir=UPLOAD_PATH,
-    display_name="Uploads",
-    name="uploads"
-), url_prefix="/uploads")
+app.register_blueprint(
+    dir_listing.construct_blueprint(
+        dir=UPLOAD_PATH, display_name="Uploads", name="uploads"
+    ),
+    url_prefix="/uploads",
+)
 
-app.register_blueprint(pad_upload_filenames, url_prefix="/zero-pad-uploaded-scoresheets")
+app.register_blueprint(
+    pad_upload_filenames, url_prefix="/zero-pad-uploaded-scoresheets"
+)
 
 app.register_blueprint(pullsheets, url_prefix="/pullsheets")
 

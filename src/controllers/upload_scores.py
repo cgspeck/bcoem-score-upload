@@ -1,3 +1,4 @@
+from pprint import pformat
 from typing import Any, Generator, Optional, Union
 from flask import Blueprint, Response, abort, current_app, g, render_template, request, url_for
 from flask_wtf import FlaskForm  # type: ignore
@@ -14,6 +15,10 @@ from src.csv_validate import (REQUIRED_HEADERS, has_required_headers, is_csv,
                               try_decode_stream)
 from src.datadefs import ScoreEntry
 from src.email import EmailReason, send_audit_email
+from src.models.brewers import get_brewer_dict
+from src.models.judging_scores import check_create_westgate_fields
+from src.models.special_best_data import set_special_best_winner
+from src.place_getter import determine_and_display_placegetters
 from src.score_process import (load_entries_from_csv, prepare_entries,
                                save_entries)
 from src.utils import must_be_authorized, save_upload
@@ -162,6 +167,49 @@ def show_form() -> Union[str, Response]:
             for m in messages:
                 yield(display_message(m))
             messages.clear()
+
+            yield(display_message("Checking database state..."))
+
+            db_ok = check_create_westgate_fields(cnn, messages)
+            for m in messages:
+                yield(display_message(m))
+            messages.clear()
+
+            if not db_ok:
+                yield(MESSAGES_FOOTER.format(homepage_path=homepage_path, bootstrap_js=bootstrap_js))
+                return
+
+            yield(display_message(f"Sorting entries and determining place getters..."))
+            yield(display_message(f"{len(entries)} entries"))
+            entries.sort(reverse=True)
+
+            yield(display_message("Loading brewer list..."))
+            brewer_dict = get_brewer_dict(cnn)
+
+            for e in entries:
+                brewer = brewer_dict[e.brewer_id]
+                e.brewer = brewer
+
+            top_entry_count = 20
+            yield(display_message(f"*** Top {top_entry_count} entries: ***"))
+            for i in range(0, top_entry_count):
+                yield(display_message(f"{i+1}"))
+                yield(display_message(f"{pformat(entries[i])}"))
+
+            bos_winner_res = determine_and_display_placegetters(entries, "Best of Show", 1, messages, set_place_property=False)
+
+            if bos_winner_res.success:
+                set_special_best_winner(cnn, bos_winner_res.place_getters[0], "Brewer of Show", messages)
+
+            determine_and_display_placegetters([x for x in entries if x.category == "8"], "Porter", 3, messages)
+            determine_and_display_placegetters([x for x in entries if x.category == "9"], "Stout", 3, messages)
+            determine_and_display_placegetters([x for x in entries if x.category == "10"], "Strong Stout", 3, messages)
+            determine_and_display_placegetters([x for x in entries if x.category == "21"], "Specialty", 3, messages)
+
+            for m in messages:
+                yield(display_message(m))
+            messages.clear()
+
             yield(display_message(f"Saving scores to database, please standby..."))
             save_entries(cnn, entries)
             messages.append(f"{len(entries)} scores saved to the database!")
@@ -169,8 +217,9 @@ def show_form() -> Union[str, Response]:
             messages.append("IMPORTANT!")
             messages.append("You *MUST* go back to BCOE&M and do the following:")
             messages.append("")
-            messages.append("1. set place-getters for each table")
-            messages.append("2. publish results")
+            messages.append("1. manually resolve any place-setters mentioned above")
+            messages.append(f"2. identify and set the best novice (using the top {top_entry_count} list above + notnovice spreadsheet), use judging number with leading zeros to set: https://comps.westgatebrewers.org/index.php?section=admin&go=special_best_data")
+            messages.append("3. publish results")
             messages.append("")
             messages.append("**Admin score reports will not work until place-getters are set**")
             messages.append("-" * 20)
