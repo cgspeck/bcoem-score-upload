@@ -1,4 +1,3 @@
-from pprint import pprint
 from mysql.connector import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
@@ -21,8 +20,6 @@ DESCRIBE judging_scores;
     existing_fields = []
     for r in cursor.fetchall():
         existing_fields.append(r[0])
-
-    pprint(f"Existing fields: {existing_fields}")
 
     for f in wg_fields:
         if f not in existing_fields:

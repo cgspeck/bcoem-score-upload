@@ -15,7 +15,7 @@ def before_request() -> None:
     pass
 
 
-@pullsheets.route("/")
+@pullsheets.route("")
 def show() -> str:
     env_short_name = request.args.get('comp_env')
     env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]

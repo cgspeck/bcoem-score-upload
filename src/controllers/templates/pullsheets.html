@@ -5,31 +5,6 @@
     rel="stylesheet"
     href="{{ url_for('static', filename='css/reports.css') }}"
 >
-<!-- <h1>Score Upload System</h1>
-<p>Welcome {{ g.user_name }}</p>
-
-{% if config.BCOME_ENVS_EXIST  %}
-<h2>Score Entry Management</h2>
-
-<p><a href={{ url_for('clear_scores.show_form') }} >Clear scores</a></p>
-
-<p><a href={{ url_for('upload_scores.show_form') }} >Upload scores</a></p>
-{% else %}
-<p>Error: no BCOE&M environments configured!</p>
-{% endif %}
-
-<p><a href={{ url_for('backup.show') }}>View Backups</a></p>
-
-<p><a href={{ url_for('uploads.show') }}>View Uploads</a></p>
-
-<h2>Score Sheet Management</h2>
-<p><a href={{ url_for('pad_upload_filenames.show_form') }}>Zero Pad Uploaded Scroresheet Filenames</a></p>
-
-<h2>Reports</h2>
-
-<p>Pull Sheets (test)</p>
-
-<p>Pull Sheets (prod)</p> -->
 {% for table in tables %}
   <h2>Table {{ loop.index }}: {{ table.category | capitalize }}</h2>
   {% if table.entries | length > 0 %}

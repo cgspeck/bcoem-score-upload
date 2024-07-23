@@ -1,7 +1,6 @@
 
 from dataclasses import dataclass
 import json
-from pprint import pprint
 from typing import Dict, List, Optional
 from mysql.connector import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
@@ -101,7 +100,6 @@ ORDER BY id ASC;
             pouring_speed=pouring_speed,
             rouse_yeast=rouse_yeast
         )
-        pprint(entry)
         memo.append(entry)
     return memo
 
