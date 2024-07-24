@@ -39,4 +39,10 @@
 
 <p><a href={{ url_for('report_generator.show', comp_env='prod' ) }}>Results Report for publication (prod)</a></p>
 
+<h2>DB Management</h2>
+
+<p><a href={{ url_for('ensure_db.show', comp_env='test' ) }}>Ensure Westgate Fields Exist (test)</a></p>
+
+<p><a href={{ url_for('ensure_db.show', comp_env='test' ) }}>Ensure Westgate Fields Exist (prod)</a></p>
+
 {% endblock %}
