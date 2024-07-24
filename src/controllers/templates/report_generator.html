@@ -11,6 +11,8 @@
     {% include "partial/result_list.html" %}
 {% endfor %}
 
+{% include "partial/club_of_show_list.html" %}
+
 <hr class="page-break" />
 
 {% for results_display_info in all_results_display_infos %}
@@ -19,11 +21,6 @@
     {% endfor %}
 {% if presentation_mode %}
     </div>
-    <script>
-        document.querySelectorAll('.watermarked').forEach(function (el) {
-                el.dataset.watermark = (el.dataset.watermark + ' ').repeat(300);
-            });
-    </script>
 {% endif %}
 
 {% endblock %}

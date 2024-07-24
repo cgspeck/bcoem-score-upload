@@ -1,6 +1,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import List, Optional, Set
+from pprint import pprint
+from typing import Dict, List, Optional, Set
 from flask import Blueprint, current_app, render_template, request
 
 from src import constants
@@ -31,6 +32,26 @@ class CategoryNameCodeCombo:
     category_code: str
 
 
+@dataclass(order=False)
+class ClubOfShowCandidate:
+    name: str
+    firsts_count: int = 0
+    seconds_count: int = 0
+    thirds_count: int = 0
+
+    def score(self) -> int:
+        return self.firsts_count * 3 + self.seconds_count * 2 + self.thirds_count * 1
+
+    def __lt__(s, o):
+        if not isinstance(o, s.__class__):
+            return False
+
+        return s.score() < o.score()
+
+    def __gt__(s, o):
+        return not s < o
+
+
 CATEGORIES_COMBOS = [
     CategoryNameCodeCombo("Porter", "8"),
     CategoryNameCodeCombo("Stout", "9"),
@@ -59,6 +80,30 @@ def show() -> str:
         return message_log(messages)
 
     entries: list[ScoreEntry] = score_entries.load_all(cnn)
+
+    club_of_show_entries = [
+        e for e in entries if e.score_place is not None and e.brewer.club is not None
+    ]
+    club_of_show_dict: Dict[str, ClubOfShowCandidate] = dict()
+
+    for club_of_show_entry in club_of_show_entries:
+        club_name = club_of_show_entry.brewer.club
+
+        if club_name not in club_of_show_dict:
+            club_of_show_dict[club_name] = ClubOfShowCandidate(name=club_name)
+
+        match club_of_show_entry.score_place:
+            case 1:
+                club_of_show_dict[club_name].firsts_count += 1
+            case 2:
+                club_of_show_dict[club_name].seconds_count += 1
+            case 3:
+                club_of_show_dict[club_name].thirds_count += 1
+
+    pprint(club_of_show_dict.values())
+    club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
+    club_of_show_list.sort(reverse=True)
+    pprint(club_of_show_list)
 
     best_novice = []
     sbd_novice = special_best_data.get_by_sbi_name(cnn, constants.BEST_NOVICE)
@@ -128,7 +173,7 @@ def show() -> str:
                 show_entry_count=False,
                 show_place_column=True,
                 show_countback=presentation_mode,
-                show_entry_id=True,
+                show_entry_id=presentation_mode,
                 show_judging_table=False,
                 entries=placegetter_entries,
             )
@@ -152,6 +197,7 @@ def show() -> str:
     return render_template(
         f"report_generator.html",
         env_full_name=env_full_name,
+        club_of_show_list=club_of_show_list,
         placegetter_display_infos=placegetter_display_infos,
         all_results_display_infos=all_results_display_infos,
         presentation_mode=presentation_mode,

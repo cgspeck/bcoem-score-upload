@@ -9,11 +9,11 @@
 <table class="table table-striped table-bordered table-sm">
     <thead>
         <tr>
-            {% if results_display_info.show_entry_id %}
-            <th>Entry Id</th>
-            {% endif %}
             {% if results_display_info.show_place_column %}
             <th>Place</th>
+            {% endif %}
+            {% if results_display_info.show_entry_id %}
+            <th>Entry Id</th>
             {% endif %}
             {% if results_display_info.show_judging_table %}
             <th>Judging Table</th>
@@ -31,14 +31,14 @@
     <tbody>
         {% for entry in results_display_info.entries %}
         <tr>
-            {% if results_display_info.show_entry_id %}
-            <td>
-                {{ entry.entry_id }}
-            </td>
-            {% endif %}
             {% if results_display_info.show_place_column %}
             <td>
                 {{ entry.score_place if entry.score_place }}
+            </td>
+            {% endif %}
+            {% if results_display_info.show_entry_id %}
+            <td>
+                {{ entry.entry_id }}
             </td>
             {% endif %}
             {% if results_display_info.show_judging_table %}
