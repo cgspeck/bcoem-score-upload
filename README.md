@@ -25,3 +25,13 @@ You can use this script to deploy/update the app from the github repo.
 ## `passenger_wsgi.py`
 
 This has nothing to do with the solution at all, but Westgate's shared hosting provider requires this file. It seems to serve as the application entry point.
+
+## Installing dependencies on host
+
+Python 3.12 didn't come with pip, so used ensurepip to install it. 
+
+To use activate virtualenv then:
+
+```shell
+python -m pip install -r requirements.txt 
+```
