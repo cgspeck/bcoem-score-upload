@@ -3,7 +3,7 @@ from flask import Blueprint, current_app, g, render_template
 from flask_wtf import FlaskForm  # type: ignore
 from wtforms import BooleanField, RadioField  # type: ignore
 from wtforms.validators import DataRequired  # type: ignore
-from mysql.connector import MySQLConnection  # type: ignore
+from mysql.connector import MySQLConnection
 
 from src.controllers.helpers import (backup_and_clear_scores,
                                      db_config_for_env_shortname,

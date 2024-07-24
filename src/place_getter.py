@@ -26,10 +26,12 @@ def determine_place_getters(
             next_candidate = candidates[i + 1]
 
         if next_candidate is None:
+            cur_candidate.score_place = i + 1
             place_getters.append(cur_candidate)
             continue
 
         if len(cur_candidate.countback_status) == 0:
+            cur_candidate.score_place = i + 1
             place_getters.append(cur_candidate)
             continue
 
@@ -40,6 +42,7 @@ def determine_place_getters(
         ]
 
         if len(interesting_conflicts) == 0:
+            cur_candidate.score_place = i + 1
             place_getters.append(cur_candidate)
             continue
 
@@ -50,30 +53,7 @@ def determine_place_getters(
 
         if conflict:
             success = False
+            cur_candidate.score_place = i + 1
             place_getters.append(cur_candidate)
 
     return PlaceGetterResult(success, place_getters)
-
-
-def determine_and_display_placegetters(
-    candidates: List[ScoreEntry],
-    name: str,
-    required_places: int,
-    messages: List[str],
-    set_place_property=True,
-) -> PlaceGetterResult:
-    placegetter_res = determine_place_getters(candidates, required_places)
-
-    messages.append(f"*** {name} winner/s ***")
-    if not placegetter_res.success:
-        messages.append(
-            messages.append("Unable to determine BOS winner, candidates follow:")
-        )
-    elif placegetter_res.success and set_place_property:
-        for i, pg in enumerate(placegetter_res.place_getters):
-            pg.score_place = i + 1
-
-    for pg in placegetter_res.place_getters:
-        messages.append(pg)
-
-    return placegetter_res

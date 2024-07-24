@@ -1,8 +1,8 @@
 from typing import Dict, Union
 
 import mysql.connector  # type: ignore
-from mysql.connector import MySQLConnection  # type: ignore
-from mysql.connector.cursor import MySQLCursor  # type: ignore
+from mysql.connector import MySQLConnection
+from mysql.connector.cursor import MySQLCursor
 from src.csv_validate import REQUIRED_HEADERS
 
 from src.datadefs import DBConfig, PHPKEY_DBCONFIG_MAP

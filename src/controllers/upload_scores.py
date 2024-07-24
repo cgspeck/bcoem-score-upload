@@ -1,24 +1,23 @@
-from pprint import pformat
-from typing import Any, Generator, Optional, Union
+from typing import Any, Generator, List, Optional, Union
 from flask import Blueprint, Response, abort, current_app, g, render_template, request, url_for
 from flask_wtf import FlaskForm  # type: ignore
 from flask_wtf.file import (FileAllowed, FileField,  # type: ignore
                             FileRequired, FileSize)
 from wtforms import BooleanField, RadioField  # type: ignore
 from wtforms.validators import DataRequired  # type: ignore
-from mysql.connector import MySQLConnection  # type: ignore
+from mysql.connector import MySQLConnection
 
 from src.controllers.helpers import (backup_and_clear_scores,
                                      db_config_for_env_shortname,
                                      get_db_connection)
 from src.csv_validate import (REQUIRED_HEADERS, has_required_headers, is_csv,
                               try_decode_stream)
-from src.datadefs import ScoreEntry
+from src.datadefs import DeterminePlaceGetterReq, ScoreEntry
 from src.email import EmailReason, send_audit_email
 from src.models.brewers import get_brewer_dict
 from src.models.judging_scores import check_create_westgate_fields
 from src.models.special_best_data import set_special_best_winner
-from src.place_getter import determine_and_display_placegetters
+from src.place_getter import determine_place_getters
 from src.score_process import (load_entries_from_csv, prepare_entries,
                                save_entries)
 from src.utils import must_be_authorized, save_upload
@@ -106,14 +105,16 @@ def show_form() -> Union[str, Response]:
         if not ok:
             return render_template(f"upload_scores_form.html", form=form)
 
-        homepage_path = url_for('home_page.show')
+        homepage_path = url_for('homepage.show')
+
         user_name = g.user_name
         user_email = g.user_email
         bootstrap_css = url_for('static', filename='css/bootstrap.min.css')
         bootstrap_js = url_for('static', filename='js/bootstrap.min.js')
 
-        messages: list[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css)]
+        messages: List[str] = [MESSAGES_HEADER.format(bootstrap_css=bootstrap_css)]
         env_short_name = form.environment.data
+        all_res_link = url_for("all_results.show", comp_env=env_short_name)
         env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
         db_config = db_config_for_env_shortname(env_short_name, messages)
         remote_addr = request.remote_addr
@@ -129,7 +130,7 @@ def show_form() -> Union[str, Response]:
             filename = save_upload(t_io, user_name, user_email, env_short_name, remote_addr)
             yield(display_message(f"Saved upload to {filename}"))
 
-            entries: list[ScoreEntry] = []
+            entries: List[ScoreEntry] = []
 
             try:
                 entries = load_entries_from_csv(t_io)
@@ -190,21 +191,54 @@ def show_form() -> Union[str, Response]:
                 brewer = brewer_dict[e.brewer_id]
                 e.brewer = brewer
 
-            top_entry_count = 20
-            yield(display_message(f"*** Top {top_entry_count} entries: ***"))
-            for i in range(0, top_entry_count):
-                yield(display_message(f"{i+1}"))
-                yield(display_message(f"{pformat(entries[i])}"))
+            dpgrs: List[DeterminePlaceGetterReq] = [
+                DeterminePlaceGetterReq(
+                    category=None,
+                    category_name="Brewer of Show",
+                    required_places=1,
+                ),
+                DeterminePlaceGetterReq(
+                    category="8",
+                    category_name="Porter",
+                    required_places=3,
+                ),
+                DeterminePlaceGetterReq(
+                    category="9",
+                    category_name="Stout",
+                    required_places=3,
+                ),
+                DeterminePlaceGetterReq(
+                    category="10",
+                    category_name="Strong Stout",
+                    required_places=3,
+                ),
+                DeterminePlaceGetterReq(
+                    category="21",
+                    category_name="Specialty",
+                    required_places=3,
+                ),
+            ]
 
-            bos_winner_res = determine_and_display_placegetters(entries, "Best of Show", 1, messages, set_place_property=False)
+            for dpgr in dpgrs:
+                if dpgr.category is None:
+                    dpgr_res = determine_place_getters(
+                        entries,
+                        dpgr.required_places,
+                    )
+                else:
+                    dpgr_res = determine_place_getters(
+                        [x for x in entries if x.category == dpgr.category],
+                        dpgr.required_places,
+                    )
 
-            if bos_winner_res.success:
-                set_special_best_winner(cnn, bos_winner_res.place_getters[0], "Brewer of Show", messages)
-
-            determine_and_display_placegetters([x for x in entries if x.category == "8"], "Porter", 3, messages)
-            determine_and_display_placegetters([x for x in entries if x.category == "9"], "Stout", 3, messages)
-            determine_and_display_placegetters([x for x in entries if x.category == "10"], "Strong Stout", 3, messages)
-            determine_and_display_placegetters([x for x in entries if x.category == "21"], "Specialty", 3, messages)
+                if dpgr_res.success:
+                    messages.append(f"Set places for {dpgr.category_name}")
+                    if dpgr.category_name == "Brewer of Show":
+                        set_special_best_winner(
+                            cnn, dpgr_res.place_getters[0], "Brewer of Show", messages
+                        )
+                else:
+                    messages.append(f"Unable to set places for {dpgr.category_name}, unable to resolve count-back, must recall the judges")
 
             for m in messages:
                 yield(display_message(m))
@@ -213,12 +247,13 @@ def show_form() -> Union[str, Response]:
             yield(display_message(f"Saving scores to database, please standby..."))
             save_entries(cnn, entries)
             messages.append(f"{len(entries)} scores saved to the database!")
+            messages.append(f"<a href={all_res_link}>View all results here!</a>")
             messages.append("-" * 20)
             messages.append("IMPORTANT!")
             messages.append("You *MUST* go back to BCOE&M and do the following:")
             messages.append("")
             messages.append("1. manually resolve any place-setters mentioned above")
-            messages.append(f"2. identify and set the best novice (using the top {top_entry_count} list above + notnovice spreadsheet), use judging number with leading zeros to set: https://comps.westgatebrewers.org/index.php?section=admin&go=special_best_data")
+            messages.append("2. identify and set the best novice (using the all results link above + notnovice spreadsheet), use judging number with leading zeros to set: https://comps.westgatebrewers.org/index.php?section=admin&go=special_best_data")
             messages.append("3. publish results")
             messages.append("")
             messages.append("**Admin score reports will not work until place-getters are set**")

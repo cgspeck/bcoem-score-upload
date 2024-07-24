@@ -7,6 +7,8 @@ from src.controllers.homepage import homepage
 from src.controllers.upload_scores import upload_scores
 from src.controllers.pad_upload_filenames import pad_upload_filenames
 from src.controllers.pullsheets import pullsheets
+from src.controllers.all_results import all_results
+from src.controllers.report_generator import report_generator
 from src.controllers import dir_listing
 
 from src.logging import setup_logger
@@ -71,6 +73,10 @@ app.register_blueprint(
 )
 
 app.register_blueprint(pullsheets, url_prefix="/pullsheets")
+
+app.register_blueprint(all_results, url_prefix="/all_results")
+
+app.register_blueprint(report_generator, url_prefix="/report_generator")
 
 if app.debug:
     pprint(app.url_map)

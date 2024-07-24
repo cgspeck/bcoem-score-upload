@@ -1,9 +1,12 @@
+from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from enum import Enum, auto
-from typing import Optional, Set, Union
+from typing import List, Optional, Set, Union
 from urllib.parse import quote
 
+from src.models.brew_entries import BrewEntry
 from src.models.brewers import Brewer
+from src.models.judging_tables import JudgingTable
 
 
 PHPKEY_DBCONFIG_MAP = {
@@ -64,8 +67,42 @@ class CountbackStatusRec:
     def __str__(self) -> str:
         return f"{self.status.value} vs {self.conflict_entry_id}"
 
+    def to_db_str(self) -> str:
+        return self.__str__()
+
+    def to_report_str(self) -> str:
+        e_val = f"{self.status.value}"
+        return f"{e_val.replace('_', ' ').title()} vs {self.conflict_entry_id}"
+
+    @classmethod
+    def from_db_str(kls, s: str) -> CountbackStatusRec:
+        tokens = s.split(" vs ")
+        enum_str = tokens[0]
+        enum_val = CountbackStatus(enum_str)
+        conflict_id = int(tokens[1])
+        return kls(enum_val, conflict_id)
+
     def __repr__(self) -> str:
         return f"CountbackStatusRec(status='{self.status.value}' conflict_entry_id={self.conflict_entry_id})"
+
+
+@dataclass
+class ResultsDisplayInfo:
+    category_heading: str
+    category_blurb: Optional[str]
+    show_entry_count: bool
+    show_place_column: bool
+    show_countback: bool
+    show_entry_id: bool
+    show_judging_table: bool
+    entries: List[ScoreEntry]
+
+
+@dataclass
+class DeterminePlaceGetterReq:
+    required_places: int
+    category: Optional[str]
+    category_name: str
 
 
 @dataclass(order=False)
@@ -93,16 +130,18 @@ class ScoreEntry:
     # maps to 'scorePlace, varchar3 in database
     score_place: Optional[int] = None
     # used to store & display countback status
-    countback_status: Set[CountbackStatusRec] = field(default_factory=set, init=False)
+    countback_status: Set[CountbackStatusRec] = field(default_factory=set)
 
     # Only used for displaying reports
     brewer: Optional[Brewer] = None
+    brew_entry: Optional[BrewEntry] = None
+    judging_table: Optional[JudgingTable] = None
 
     def countback_status_db_repr(self):
         if len(self.countback_status) == 0:
             return None
 
-        return ",".join([f"{x}" for x in self.countback_status])
+        return ", ".join([x.to_db_str() for x in self.countback_status])
 
     def __post_init__(self) -> None:
         self.style_key = make_cat_subcat_key(self.category, self.sub_category)

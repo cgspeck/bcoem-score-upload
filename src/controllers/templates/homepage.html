@@ -27,5 +27,16 @@
 
 <p><a href={{ url_for('pullsheets.show', comp_env='prod') }}>Pull Sheets (prod)</a></p>
 
+<p><a href={{ url_for('all_results.show', comp_env='test' ) }}>All results with all details (test)</a></p>
+
+<p><a href={{ url_for('all_results.show', comp_env='prod' ) }}>All results with all details (prod)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='test', presentation_mode=True ) }}>Results Report with details for presentation (test)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='prod', presentation_mode=True ) }}>Results Report with details for presentation (prod)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='test' ) }}>Results Report for publication (test)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='prod' ) }}>Results Report for publication (prod)</a></p>
 
 {% endblock %}
