@@ -35,3 +35,8 @@ To use activate virtualenv then:
 ```shell
 python -m pip install -r requirements.txt 
 ```
+
+## Static files
+
+Need to be manually copied into ~/<subdomain>/<subfolder>/static.
+Double-check they are stuffed symlinks.
