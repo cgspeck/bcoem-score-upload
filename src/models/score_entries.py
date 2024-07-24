@@ -36,7 +36,7 @@ def load_all(cnn: MySQLConnection) -> List[ScoreEntry]:
                 # maps to 'scorePlace, varchar3 in database
                 score_place=js_rec.score_place,
                 # used to store & display countback status
-                countback_status=js_rec.countback_status,
+                countback_status=js_rec.countback_status or set(),
                 # Only used for displaying reports
                 brewer=brewer_dict[js_rec.brewer_id],
                 brew_entry=brew_entry,
