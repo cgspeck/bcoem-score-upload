@@ -1,6 +1,5 @@
 from copy import deepcopy
 from dataclasses import dataclass
-from pprint import pprint
 from typing import Dict, List, Optional, Set
 from flask import Blueprint, current_app, render_template, request
 
@@ -13,14 +12,15 @@ from src.controllers.helpers import (
 from src.datadefs import CountbackStatus, ResultsDisplayInfo, ScoreEntry
 from src.models import score_entries
 from src.models import special_best_data
-from src.utils import must_be_authorized
+from src.utils import must_have_valid_compenv, topt_or_authorized
 from mysql.connector import MySQLConnection
 
 report_generator = Blueprint("report_generator", __name__, template_folder="templates")
 
 
 @report_generator.before_request
-@must_be_authorized
+@topt_or_authorized
+@must_have_valid_compenv
 def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
@@ -63,7 +63,7 @@ CATEGORIES_COMBOS = [
 @report_generator.route("")
 def show() -> str:
     env_short_name = request.args.get("comp_env")
-    presentation_mode = request.args.get("presentation_mode", False)
+    presentation_mode = request.args.get("presentation_mode", "False") == "True"
 
     env_full_name = [
         x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name
@@ -100,10 +100,8 @@ def show() -> str:
             case 3:
                 club_of_show_dict[club_name].thirds_count += 1
 
-    pprint(club_of_show_dict.values())
     club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
     club_of_show_list.sort(reverse=True)
-    pprint(club_of_show_list)
 
     best_novice = []
     sbd_novice = special_best_data.get_by_sbi_name(cnn, constants.BEST_NOVICE)

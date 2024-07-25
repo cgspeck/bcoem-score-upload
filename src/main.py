@@ -24,9 +24,9 @@ app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = os.environ.get("GOOGLE_OAUTH_CLIENT_S
 app.config["BCOME_TEST_CONF"] = os.environ.get("BCOME_TEST_CONF")
 app.config["BCOME_PROD_CONF"] = os.environ.get("BCOME_PROD_CONF")
 app.config["BYPASS_OAUTH"] = os.environ.get("BYPASS_OAUTH", "false") == "true"
-app.config["AUTOMIGRATIONS_ENABLED"] = (
-    os.environ.get("AUTOMIGRATIONS_ENABLED", "true") == "true"
-)
+app.config["TOPT_ENABLED"] = os.environ.get("TOPT_ENABLED", "false") == "true"
+app.config["TOPT_SECRET"] = os.environ.get("TOPT_SECRET", None)
+app.config["TOPT_VALID_MINUTES"] = int(os.environ.get("TOPT_VALID_MINUTES", 1))
 bcome_env_choices = []
 
 if app.config["BCOME_TEST_CONF"] is not None:

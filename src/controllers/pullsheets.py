@@ -3,13 +3,14 @@ from flask import Blueprint, current_app, render_template, request
 
 from src.controllers.helpers import db_config_for_env_shortname, get_db_connection, message_log
 from src.models.pullsheets import get_data
-from src.utils import must_be_authorized
+from src.utils import must_have_valid_compenv, topt_or_authorized
 from mysql.connector import MySQLConnection
 
 pullsheets = Blueprint("pullsheets", __name__, template_folder="templates")
 
 @pullsheets.before_request
-@must_be_authorized
+@topt_or_authorized
+@must_have_valid_compenv
 def before_request() -> None:
     """Protect all of the admin endpoints."""
     pass
