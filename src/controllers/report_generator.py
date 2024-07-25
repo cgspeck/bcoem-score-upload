@@ -81,6 +81,18 @@ def show() -> str:
 
     entries: list[ScoreEntry] = score_entries.load_all(cnn)
 
+    for ent in entries:
+        if ent.brewer.club is None:
+            continue
+
+        stripped_club = ent.brewer.club.strip()
+        if len(stripped_club) == 0:
+            ent.brewer.club = None
+
+        if stripped_club.lower() == "none":
+            ent.brewer.club = None
+
+
     club_of_show_entries = [
         e for e in entries if e.score_place is not None and e.brewer.club is not None
     ]
