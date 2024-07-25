@@ -1,0 +1,3 @@
+.watermark {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='200px' width='200px'><text transform='translate(20, 100) rotate(-45)' fill='rgb(200,200,200)' font-size='18'>not for distribution</text></svg>");
+}

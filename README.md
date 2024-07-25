@@ -13,7 +13,7 @@ pyenv install
 pip install -r requirements-dev.txt
 cp .env.example .env
 # set vars in .env
-flask run
+flask run --debug
 ```
 
 Go to http://localhost:5000
@@ -25,3 +25,18 @@ You can use this script to deploy/update the app from the github repo.
 ## `passenger_wsgi.py`
 
 This has nothing to do with the solution at all, but Westgate's shared hosting provider requires this file. It seems to serve as the application entry point.
+
+## Installing dependencies on host
+
+Python 3.12 didn't come with pip, so used ensurepip to install it. 
+
+To use activate virtualenv then:
+
+```shell
+python -m pip install -r requirements.txt 
+```
+
+## Static files
+
+Need to be manually copied into ~/<subdomain>/<subfolder>/static.
+Double-check they are stuffed symlinks.

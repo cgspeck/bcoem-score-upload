@@ -1,7 +1,7 @@
 from pathlib import Path
 from flask import current_app, render_template
-from mysql.connector import MySQLConnection  # type: ignore
-from src.datadefs import DBConfig  # type: ignore
+from mysql.connector import MySQLConnection
+from src.datadefs import DBConfig
 from src.db import (create_connection, execute_backup_query,
                     execute_clear_query, extract_db_config)
 from src.utils import determine_config, save_backup

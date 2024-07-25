@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Main Menu{% endblock %}
+{% block content %}
+<h1>Score Upload System</h1>
+<p>Welcome {{ g.user_name }}</p>
+
+{% if config.BCOME_ENVS_EXIST %}
+<h2>Score Entry Management</h2>
+
+<p><a href={{ url_for('clear_scores.show_form') }}>Clear scores</a></p>
+
+<p><a href={{ url_for('upload_scores.show_form') }}>Upload scores</a></p>
+{% else %}
+<p>Error: no BCOE&M environments configured!</p>
+{% endif %}
+
+<p><a href={{ url_for('backup.show') }}>View Backups</a></p>
+
+<p><a href={{ url_for('uploads.show') }}>View Uploads</a></p>
+
+<h2>Score Sheet Management</h2>
+<p><a href={{ url_for('pad_upload_filenames.show_form') }}>Zero Pad Uploaded Scroresheet Filenames</a></p>
+
+<h2>Reports</h2>
+
+<p><a href={{ url_for('pullsheets.show', comp_env='test') }}>Pull Sheets (test)</a></p>
+
+<p><a href={{ url_for('pullsheets.show', comp_env='prod') }}>Pull Sheets (prod)</a></p>
+
+<p><a href={{ url_for('all_results.show', comp_env='test' ) }}>All results with all details (test)</a></p>
+
+<p><a href={{ url_for('all_results.show', comp_env='prod' ) }}>All results with all details (prod)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='test', presentation_mode=True ) }}>Results Report with details for presentation (test)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='prod', presentation_mode=True ) }}>Results Report with details for presentation (prod)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='test' ) }}>Results Report for publication (test)</a></p>
+
+<p><a href={{ url_for('report_generator.show', comp_env='prod' ) }}>Results Report for publication (prod)</a></p>
+
+<h2>DB Management</h2>
+
+<p><a href={{ url_for('ensure_db.show', comp_env='test' ) }}>Ensure Westgate Fields Exist (test)</a></p>
+
+<p><a href={{ url_for('ensure_db.show', comp_env='prod' ) }}>Ensure Westgate Fields Exist (prod)</a></p>
+
+{% endblock %}

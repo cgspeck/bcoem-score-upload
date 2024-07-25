@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Full Results Report - {{ env_full_name }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+
+{% if presentation_mode %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/watermark.css') }}">
+    <div class="watermark">
+{% endif %}
+{% for results_display_info in placegetter_display_infos %}
+    {% include "partial/result_list.html" %}
+{% endfor %}
+
+{% include "partial/club_of_show_list.html" %}
+
+<hr class="page-break" />
+
+{% for results_display_info in all_results_display_infos %}
+    {% include "partial/result_list.html" %}
+    <hr class="page-break" />
+    {% endfor %}
+{% if presentation_mode %}
+    </div>
+{% endif %}
+
+{% endblock %}

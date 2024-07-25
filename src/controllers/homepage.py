@@ -3,7 +3,7 @@ from flask import Blueprint, render_template
 from src.utils import must_be_authorized
 
 
-homepage = Blueprint("home_page", __name__, template_folder="templates")
+homepage = Blueprint("homepage", __name__, template_folder="templates")
 
 
 @homepage.before_request
@@ -15,4 +15,4 @@ def before_request() -> None:
 
 @homepage.route("/")
 def show() -> str:
-    return render_template(f"home.html")
+    return render_template(f"homepage.html")
