@@ -7,17 +7,32 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/watermark.css') }}">
     <div class="watermark">
 {% endif %}
+
+{% if contest_info %}
+    {% include "partial/coverpage.html" %}
+    <div class="page-break"></div>
+{% endif %}
+
+{% if sponsors %}
+{% include "partial/sponsor_list.html" %}
+<div class="page-break"></div>
+{% endif %}
+
+{% if staff_summary %}
+    {% include "partial/staff_list.html" %}
+    <div class="page-break"></div>
+{% endif %}
 {% for results_display_info in placegetter_display_infos %}
     {% include "partial/result_list.html" %}
 {% endfor %}
 
 {% include "partial/club_of_show_list.html" %}
 
-<hr class="page-break" />
+<div class="page-break"></div>
 
 {% for results_display_info in all_results_display_infos %}
     {% include "partial/result_list.html" %}
-    <hr class="page-break" />
+    <div class="page-break"></div>
     {% endfor %}
 {% if presentation_mode %}
     </div>

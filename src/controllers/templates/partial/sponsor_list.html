@@ -1,0 +1,24 @@
+<h2>Thank you to our fantastic sponsors!</h2>
+<!-- <div class="container">
+  <div class="row">
+    <div class="col">col</div>
+    <div class="col">col</div>
+    <div class="col">col</div>
+    <div class="col">col</div>
+  </div> -->
+<table class="table table-sm">
+    <tbody>
+    {% for row in sponsors | batch(4) %}
+        <tr>
+        {% for sponsor in row %}
+            <td class="sponsor-row">
+                <strong>{{ sponsor.name }}</strong><br/>
+                <span class="sponsor-text">{{ sponsor.location if sponsor.location }}</span><br/>
+                <img src='{{ sponsor.image_href }}' class="sponsor-thumb"><br/>
+                <span class="sponsor-text">{{ sponsor.text | safe if sponsor.text }}</span>
+            </td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -9,12 +9,57 @@ body {
   margin: 0px;
 }
 
+.coverpage-container {
+  text-align: center;
+}
+
+.sponsor-col {
+  width: 25%;
+}
+
+.sponsor-thumb {
+  width: 180px;
+  height: 180px;
+}
+
+.sponsor-text {
+  font-size: 0.65rem;
+}
+
 @media print {
-  hr {
+  .container {
+    max-width: none;
+  }
+
+  .coverpage-container {
+    margin-top: 100mm;
+  }
+
+  div.page-break {
     page-break-after: always;
   }
 
-  .container {
-    max-width: none;
+  div.staff-list {
+    font-size: 18pt;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  h3.staff-list {
+    text-align: center;
+  }
+
+  .h2,
+  h2 {
+    font-size: 2rem;
+    page-break-after: avoid;
+  }
+
+  .table table {
+    page-break-before: avoid;
+  }
+
+  td {
+    page-break-inside: avoid;
   }
 }
