@@ -1,24 +1,29 @@
 <h2>Thank you to our fantastic sponsors!</h2>
-<!-- <div class="container">
-  <div class="row">
-    <div class="col">col</div>
-    <div class="col">col</div>
-    <div class="col">col</div>
-    <div class="col">col</div>
-  </div> -->
-<table class="table table-sm">
+<table class="table table-sm table-borderless">
     <tbody>
     {% for row in sponsors | batch(4) %}
-        <tr>
+        <tr class="s-row-head">
         {% for sponsor in row %}
-            <td class="sponsor-row">
+            <td class="s-col">
                 <strong>{{ sponsor.name }}</strong><br/>
-                <span class="sponsor-text">{{ sponsor.location if sponsor.location }}</span><br/>
-                <img src='{{ sponsor.image_href }}' class="sponsor-thumb"><br/>
-                <span class="sponsor-text">{{ sponsor.text | safe if sponsor.text }}</span>
+                <span class="s-text">{{ sponsor.location if sponsor.location }}</span><br/>
             </td>
         {% endfor %}
         </tr>
+        <tr class="s-row-thumb">
+        {% for sponsor in row %}
+          <td class="s-col-thumb">
+            <img src='{{ sponsor.image_href }}' class="s-thumb"><br/>
+          </td>
+        {% endfor %}
+        </tr>
+        <tr class="s-row-tail">
+        {% for sponsor in row %}
+          <td class="s-col">
+            <span class="s-text">{{ sponsor.text | safe if sponsor.text }}</span>
+          </td>
+        {% endfor %}
+      </tr>
     {% endfor %}
     </tbody>
 </table>

@@ -13,16 +13,21 @@ body {
   text-align: center;
 }
 
-.sponsor-col {
+.s-col {
   width: 25%;
 }
 
-.sponsor-thumb {
-  width: 180px;
-  height: 180px;
+.s-col-thumb {
+  align-content: center;
+  vertical-align: middle;
 }
 
-.sponsor-text {
+.s-thumb {
+  width: 100%;
+  height: auto;
+}
+
+.s-text {
   font-size: 0.65rem;
 }
 
@@ -49,6 +54,10 @@ body {
     text-align: center;
   }
 
+  .s-thumb {
+    width: 180px;
+  }
+
   .h2,
   h2 {
     font-size: 2rem;
@@ -57,6 +66,21 @@ body {
 
   .table table {
     page-break-before: avoid;
+  }
+
+  .s-row-head {
+    page-break-before: auto;
+    page-break-after: avoid;
+  }
+
+  .s-row-thumb {
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
+
+  .s-row-tail {
+    page-break-before: avoid;
+    page-break-after: auto;
   }
 
   td {
