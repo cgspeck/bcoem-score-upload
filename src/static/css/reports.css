@@ -31,6 +31,11 @@ body {
   font-size: 0.65rem;
 }
 
+.wg-report-logo {
+  max-width: 804px;
+  width: 100%;
+}
+
 @media print {
   .container {
     max-width: none;
