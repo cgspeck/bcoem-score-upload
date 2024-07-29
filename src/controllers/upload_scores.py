@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Generator, List, Optional, Union
 from flask import Blueprint, Response, abort, current_app, g, render_template, request, url_for
 from flask_wtf import FlaskForm  # type: ignore
@@ -12,7 +13,7 @@ from src.controllers.helpers import (backup_and_clear_scores,
                                      get_db_connection)
 from src.csv_validate import (REQUIRED_HEADERS, has_required_headers, is_csv,
                               try_decode_stream)
-from src.datadefs import DeterminePlaceGetterReq, ScoreEntry
+from src.datadefs import ScoreEntry
 from src.email import EmailReason, send_audit_email
 from src.models.brewers import get_brewer_dict
 from src.models.judging_scores import check_create_westgate_fields
@@ -48,6 +49,13 @@ MESSAGES_FOOTER = """
 </body>
 </html>
 """
+
+@dataclass
+class DeterminePlaceGetterReq:
+    required_places: int
+    category: Optional[str]
+    category_name: str
+
 upload_scores = Blueprint("upload_scores", __name__, template_folder="templates")
 
 def display_message(message: str) -> str:

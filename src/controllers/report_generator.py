@@ -12,6 +12,10 @@ from src.controllers.helpers import (
 from src.datadefs import CountbackStatus, ResultsDisplayInfo, ScoreEntry
 from src.models import score_entries
 from src.models import special_best_data
+from src.models import staff
+from src.models.contest_info import ContestInfo, get_contest_info
+from src.models.sponsors import Sponsor, get_sponsors
+from src.models.staff import StaffSummary
 from src.utils import must_have_valid_compenv, topt_or_authorized
 from mysql.connector import MySQLConnection
 
@@ -79,6 +83,15 @@ def show() -> str:
         messages.append(f"Error connecting to database: {e}")
         return message_log(messages)
 
+    contest_info: Optional[ContestInfo] = None
+    staff_summary: Optional[StaffSummary] = None
+    sponsors: Optional[List[Sponsor]] = None
+
+    if not presentation_mode:
+        contest_info = get_contest_info(cnn)
+        staff_summary = staff.get_summary(cnn)
+        sponsors = get_sponsors(cnn)
+
     entries: list[ScoreEntry] = score_entries.load_all(cnn)
 
     for ent in entries:
@@ -91,7 +104,6 @@ def show() -> str:
 
         if stripped_club.lower() == "none":
             ent.brewer.club = None
-
 
     club_of_show_entries = [
         e for e in entries if e.score_place is not None and e.brewer.club is not None
@@ -211,4 +223,7 @@ def show() -> str:
         placegetter_display_infos=placegetter_display_infos,
         all_results_display_infos=all_results_display_infos,
         presentation_mode=presentation_mode,
+        staff_summary=staff_summary,
+        contest_info=contest_info,
+        sponsors=sponsors,
     )

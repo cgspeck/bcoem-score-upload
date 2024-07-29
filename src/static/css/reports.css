@@ -9,12 +9,86 @@ body {
   margin: 0px;
 }
 
+.coverpage-container {
+  text-align: center;
+}
+
+.s-col {
+  width: 25%;
+}
+
+.s-col-thumb {
+  align-content: center;
+  vertical-align: middle;
+}
+
+.s-thumb {
+  width: 100%;
+  height: auto;
+}
+
+.s-text {
+  font-size: 0.65rem;
+}
+
+.wg-report-logo {
+  max-width: 804px;
+  width: 100%;
+}
+
 @media print {
-  hr {
+  .container {
+    max-width: none;
+  }
+
+  .coverpage-container {
+    margin-top: 100mm;
+  }
+
+  div.page-break {
     page-break-after: always;
   }
 
-  .container {
-    max-width: none;
+  div.staff-list {
+    font-size: 18pt;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  h3.staff-list {
+    text-align: center;
+  }
+
+  .s-thumb {
+    width: 180px;
+  }
+
+  .h2,
+  h2 {
+    font-size: 2rem;
+    page-break-after: avoid;
+  }
+
+  .table table {
+    page-break-before: avoid;
+  }
+
+  .s-row-head {
+    page-break-before: auto;
+    page-break-after: avoid;
+  }
+
+  .s-row-thumb {
+    page-break-before: avoid;
+    page-break-after: avoid;
+  }
+
+  .s-row-tail {
+    page-break-before: avoid;
+    page-break-after: auto;
+  }
+
+  td {
+    page-break-inside: avoid;
   }
 }

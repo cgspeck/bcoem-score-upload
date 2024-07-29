@@ -1,0 +1,25 @@
+<h2>Thank you to all those involved!</h2>
+{% if staff_summary.judges | length > 0 %}
+    <h3 class="staff-list">Judges</h3>
+    <div class="staff-list">
+        {% for x in staff_summary.judges %}
+            {{x}}{{ ", " if loop.index < loop.length }} 
+        {% endfor %}
+    </div>
+{% endif %}
+{% if staff_summary.stewards | length > 0 %}
+    <h3 class="staff-list">Stewards</h3>
+    <div class="staff-list">
+        {% for x in staff_summary.stewards %}
+            {{x}}{{ ", " if loop.index < loop.length }} 
+        {% endfor %}
+    </div>
+{% endif %}
+{% if staff_summary.staffs | length > 0 %}
+    <h3 class="staff-list">Staff</h3>
+    <div class="staff-list">
+        {% for x in staff_summary.staffs %}
+            {{x}}{{ ", " if loop.index < loop.length }} 
+        {% endfor %}
+    </div>
+{% endif %}

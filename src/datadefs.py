@@ -97,14 +97,6 @@ class ResultsDisplayInfo:
     show_judging_table: bool
     entries: List[ScoreEntry]
 
-
-@dataclass
-class DeterminePlaceGetterReq:
-    required_places: int
-    category: Optional[str]
-    category_name: str
-
-
 @dataclass(order=False)
 class ScoreEntry:
     entry_id: int  # 'eid'
