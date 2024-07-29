@@ -92,8 +92,6 @@ def show() -> str:
         staff_summary = staff.get_summary(cnn)
         sponsors = get_sponsors(cnn)
 
-    print(contest_info)
-
     entries: list[ScoreEntry] = score_entries.load_all(cnn)
 
     for ent in entries:
