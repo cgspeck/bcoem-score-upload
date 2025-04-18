@@ -145,6 +145,8 @@ def show() -> str:
 
     entries_belonging_to_a_club = [e for e in entries if e.brewer.club is not None]
     for entry_belonging_to_a_club in entries_belonging_to_a_club:
+        club_name = entry_belonging_to_a_club.brewer.club
+
         club_of_show_dict[club_name].entry_count += 1
         club_of_show_dict[club_name].scores.append(
             entry_belonging_to_a_club.total_score
