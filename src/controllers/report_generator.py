@@ -146,11 +146,6 @@ def show() -> str:
             entry_belonging_to_a_club.total_score
         )
 
-    print(
-        f"club_of_show_dict: {club_of_show_dict}",
-        file=sys.stderr,
-    )
-
     for x in club_of_show_dict.values():
         if len(x.member_scores) == 0:
             continue
@@ -158,11 +153,6 @@ def show() -> str:
         x.member_average_score = sum(x.member_scores) / len(x.member_scores)
 
     club_of_show_list = sorted(club_of_show_dict.values(), reverse=True)
-
-    print(
-        f"club_of_show_list: {club_of_show_list}",
-        file=sys.stderr,
-    )
 
     best_novice = []
     sbd_novice = special_best_data.get_by_sbi_name(cnn, constants.BEST_NOVICE)
