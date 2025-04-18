@@ -1,9 +1,9 @@
 from copy import deepcopy
 import csv
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from io import StringIO
 import io
-from typing import Optional, TextIO
+from typing import Optional, TextIO, Union
 
 REQUIRED_HEADERS = ["Entry Number", "Category", "Sub-category", "Total Score"]
 
@@ -12,6 +12,9 @@ REQUIRED_HEADERS = ["Entry Number", "Category", "Sub-category", "Total Score"]
 class HeaderValidateResponse:
     ok: bool = True
     missing: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Union[bool, list[str]]]:
+        return asdict(self)
 
 
 def try_decode_stream(b: bytes) -> Optional[StringIO]:
