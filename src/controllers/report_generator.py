@@ -1,5 +1,5 @@
 from copy import deepcopy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
 from flask import Blueprint, current_app, render_template, request
 
@@ -42,7 +42,8 @@ class ClubOfShowCandidate:
     firsts_count: int = 0
     seconds_count: int = 0
     thirds_count: int = 0
-    average_score: int = 0
+    scores: List[float] = field(default=list)
+    average_score: float = 0
     entry_count: int = 0
 
     def score(self) -> int:
@@ -122,12 +123,12 @@ def show() -> str:
         if stripped_club.lower() == "none":
             ent.brewer.club = None
 
-    club_of_show_entries = [
+    entries_belonging_to_a_club = [
         e for e in entries if e.score_place is not None and e.brewer.club is not None
     ]
     club_of_show_dict: Dict[str, ClubOfShowCandidate] = dict()
 
-    for club_of_show_entry in club_of_show_entries:
+    for club_of_show_entry in entries_belonging_to_a_club:
         club_name = club_of_show_entry.brewer.club
 
         if club_name not in club_of_show_dict:
@@ -140,6 +141,16 @@ def show() -> str:
                 club_of_show_dict[club_name].seconds_count += 1
             case 3:
                 club_of_show_dict[club_name].thirds_count += 1
+
+    entries_belonging_to_a_club = [
+        e for e in entries if e.brewer.club is not None
+    ]
+    for entry_belonging_to_a_club in entries_belonging_to_a_club:
+        club_of_show_dict[club_name].entry_count += 1
+        club_of_show_dict[club_name].scores.append(entry_belonging_to_a_club.total_score)
+
+    for x in club_of_show_dict.values():
+        x.average_score = sum(x.scores) / len(x.scores)
 
     club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
     club_of_show_list.sort(reverse=True)
