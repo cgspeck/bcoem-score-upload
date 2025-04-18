@@ -146,7 +146,10 @@ def show() -> str:
             entry_belonging_to_a_club.total_score
         )
 
-    print(f"club_of_show_dict: {club_of_show_dict}")
+    print(
+        f"club_of_show_dict: {club_of_show_dict}",
+        file=sys.stderr,
+    )
 
     for x in club_of_show_dict.values():
         if len(x.scores) == 0:
