@@ -155,6 +155,8 @@ def show() -> str:
     club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
     club_of_show_list.sort(reverse=True)
 
+    print(f"club_of_show_list: {club_of_show_list}")
+
     best_novice = []
     sbd_novice = special_best_data.get_by_sbi_name(cnn, constants.BEST_NOVICE)
 
