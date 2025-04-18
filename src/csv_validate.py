@@ -5,7 +5,18 @@ from io import StringIO
 import io
 from typing import Optional, TextIO, Union
 
-REQUIRED_HEADERS = ["Entry Number", "Category", "Sub-category", "Total Score"]
+REQUIRED_HEADERS = [
+    "Entry Number",
+    "Category",
+    "Sub-category",
+    "Total Score",
+    "Appearance",
+    "Body",
+    "Aroma",
+    "Overall",
+    "Flavour",
+    "Score Spread",
+]
 
 
 @dataclass
