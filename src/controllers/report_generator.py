@@ -143,6 +143,7 @@ def show() -> str:
             case 3:
                 club_of_show_dict[club_name].thirds_count += 1
 
+    print(f"club_of_show_dict: {club_of_show_dict}")
     entries_belonging_to_a_club = [e for e in entries if e.brewer.club is not None]
     for entry_belonging_to_a_club in entries_belonging_to_a_club:
         club_name = entry_belonging_to_a_club.brewer.club
