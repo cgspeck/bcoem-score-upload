@@ -124,18 +124,16 @@ def show() -> str:
         if stripped_club.lower() == "none":
             ent.brewer.club = None
 
-    entries_belonging_to_a_club = [
-        e for e in entries if e.score_place is not None and e.brewer.club is not None
-    ]
+    entries_belonging_to_a_club = [e for e in entries if e.brewer.club is not None]
     club_of_show_dict: Dict[str, ClubOfShowCandidate] = dict()
 
-    for club_of_show_entry in entries_belonging_to_a_club:
-        club_name = club_of_show_entry.brewer.club
+    for entry_belonging_to_a_club in entries_belonging_to_a_club:
+        club_name = entry_belonging_to_a_club.brewer.club
 
         if club_name not in club_of_show_dict:
             club_of_show_dict[club_name] = ClubOfShowCandidate(name=club_name)
 
-        match club_of_show_entry.score_place:
+        match entry_belonging_to_a_club.score_place:
             case 1:
                 club_of_show_dict[club_name].firsts_count += 1
             case 2:
@@ -143,15 +141,12 @@ def show() -> str:
             case 3:
                 club_of_show_dict[club_name].thirds_count += 1
 
-    print(f"club_of_show_dict: {club_of_show_dict}")
-    entries_belonging_to_a_club = [e for e in entries if e.brewer.club is not None]
-    for entry_belonging_to_a_club in entries_belonging_to_a_club:
-        club_name = entry_belonging_to_a_club.brewer.club
-
         club_of_show_dict[club_name].entry_count += 1
         club_of_show_dict[club_name].scores.append(
             entry_belonging_to_a_club.total_score
         )
+
+    print(f"club_of_show_dict: {club_of_show_dict}")
 
     for x in club_of_show_dict.values():
         if len(x.scores) == 0:
