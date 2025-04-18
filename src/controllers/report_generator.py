@@ -138,8 +138,6 @@ def show() -> str:
         cnn, constants.BREWER_OF_SHOW
     )
 
-    print(f"sbd_brewer_of_show: {sbd_brewer_of_show}")
-
     if sbd_brewer_of_show is not None:
         brewer_of_show = [e for e in entries if e.entry_id == sbd_brewer_of_show.eid]
 

@@ -48,7 +48,7 @@ def get_by_sbi_name(cnn: MySQLConnection, name: str) -> Optional[SpecialBestData
     sbi = special_best_info.get_by_name(cnn, name)
 
     if sbi is None:
-        return False
+        return None
 
     sql = """
 SELECT id, sid, bid, eid, sbd_place
