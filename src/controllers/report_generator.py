@@ -150,6 +150,9 @@ def show() -> str:
         )
 
     for x in club_of_show_dict.values():
+        if len(x.scores) == 0:
+            continue
+
         x.average_score = sum(x.scores) / len(x.scores)
 
     club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
