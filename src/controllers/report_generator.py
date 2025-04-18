@@ -42,7 +42,7 @@ class ClubOfShowCandidate:
     firsts_count: int = 0
     seconds_count: int = 0
     thirds_count: int = 0
-    scores: List[float] = field(default=list)
+    scores: list[float] = field(default_factory=list)
     average_score: float = 0
     entry_count: int = 0
 
@@ -142,12 +142,12 @@ def show() -> str:
             case 3:
                 club_of_show_dict[club_name].thirds_count += 1
 
-    entries_belonging_to_a_club = [
-        e for e in entries if e.brewer.club is not None
-    ]
+    entries_belonging_to_a_club = [e for e in entries if e.brewer.club is not None]
     for entry_belonging_to_a_club in entries_belonging_to_a_club:
         club_of_show_dict[club_name].entry_count += 1
-        club_of_show_dict[club_name].scores.append(entry_belonging_to_a_club.total_score)
+        club_of_show_dict[club_name].scores.append(
+            entry_belonging_to_a_club.total_score
+        )
 
     for x in club_of_show_dict.values():
         x.average_score = sum(x.scores) / len(x.scores)
