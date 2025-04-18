@@ -43,8 +43,8 @@ class ClubOfShowCandidate:
     firsts_count: int = 0
     seconds_count: int = 0
     thirds_count: int = 0
-    scores: list[float] = field(default_factory=list)
-    average_score: float = 0
+    member_scores: list[float] = field(default_factory=list)
+    member_average_score: float = 0
     entry_count: int = 0
 
     def score(self) -> int:
@@ -60,11 +60,11 @@ class ClubOfShowCandidate:
         if not self_score == other_score:
             return self_score < other_score
 
-        self_average_score = s.average_score
-        other_average_score = o.average_score
+        self_member_average_score = s.member_average_score
+        other_member_average_score = o.member_average_score
 
-        if not self_average_score == other_average_score:
-            return self_average_score < other_average_score
+        if not self_member_average_score == other_member_average_score:
+            return self_member_average_score < other_member_average_score
 
         self_entry_count = s.entry_count
         other_entry_count = o.entry_count
@@ -142,7 +142,7 @@ def show() -> str:
                 club_of_show_dict[club_name].thirds_count += 1
 
         club_of_show_dict[club_name].entry_count += 1
-        club_of_show_dict[club_name].scores.append(
+        club_of_show_dict[club_name].member_scores.append(
             entry_belonging_to_a_club.total_score
         )
 
@@ -152,10 +152,10 @@ def show() -> str:
     )
 
     for x in club_of_show_dict.values():
-        if len(x.scores) == 0:
+        if len(x.member_scores) == 0:
             continue
 
-        x.average_score = sum(x.scores) / len(x.scores)
+        x.member_average_score = sum(x.member_scores) / len(x.member_scores)
 
     club_of_show_list = sorted(club_of_show_dict.values(), reverse=True)
 
