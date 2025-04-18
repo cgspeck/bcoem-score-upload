@@ -157,8 +157,7 @@ def show() -> str:
 
         x.average_score = sum(x.scores) / len(x.scores)
 
-    club_of_show_list = [x for x in club_of_show_dict.values() if x.score() > 0]
-    club_of_show_list.sort(reverse=True)
+    club_of_show_list = sorted(club_of_show_dict.values(), reverse=True)
 
     print(
         f"club_of_show_list: {club_of_show_list}",
