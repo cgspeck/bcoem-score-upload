@@ -1,6 +1,5 @@
 from copy import deepcopy
 from dataclasses import dataclass, field
-import sys
 from typing import Dict, List, Optional, Set
 from flask import Blueprint, current_app, render_template, request
 
