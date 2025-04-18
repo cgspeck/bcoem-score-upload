@@ -42,6 +42,8 @@ class ClubOfShowCandidate:
     firsts_count: int = 0
     seconds_count: int = 0
     thirds_count: int = 0
+    average_score: int = 0
+    entry_count: int = 0
 
     def score(self) -> int:
         return self.firsts_count * 3 + self.seconds_count * 2 + self.thirds_count * 1
@@ -50,7 +52,22 @@ class ClubOfShowCandidate:
         if not isinstance(o, s.__class__):
             return False
 
-        return s.score() < o.score()
+        self_score = s.score()
+        other_score = o.score()
+
+        if not self_score == other_score:
+            return self_score < other_score
+
+        self_average_score = s.average_score
+        other_average_score = o.average_score
+
+        if not self_average_score == other_average_score:
+            return self_average_score < other_average_score
+
+        self_entry_count = s.entry_count
+        other_entry_count = o.entry_count
+
+        return self_entry_count > other_entry_count
 
     def __gt__(s, o):
         return not s < o
