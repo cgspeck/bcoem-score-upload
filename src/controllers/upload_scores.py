@@ -265,11 +265,6 @@ def show_form() -> Union[str, Response]:
                     category_name="Strong Stout",
                     required_places=3,
                 ),
-                DeterminePlaceGetterReq(
-                    category="21",
-                    category_name="Specialty",
-                    required_places=3,
-                ),
             ]
 
             for dpgr in dpgrs:
