@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pprint import pformat
 from typing import Any, Generator, List, Optional, Union
 from flask import (
     Blueprint,
@@ -281,6 +282,7 @@ def show_form() -> Union[str, Response]:
 
                 if dpgr_res.success:
                     messages.append(f"Set places for {dpgr.category_name}")
+                    messages.append(pformat(dpgr_res.place_getters))
                     if dpgr.category_name == "Brewer of Show":
                         set_special_best_winner(
                             cnn, dpgr_res.place_getters[0], "Brewer of Show", messages
