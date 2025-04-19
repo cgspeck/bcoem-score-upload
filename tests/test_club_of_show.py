@@ -1,5 +1,3 @@
-from pytest_snapshot.plugin import Snapshot  # type: ignore
-
 from src.controllers.report_generator import ClubOfShowCandidate
 
 

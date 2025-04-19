@@ -78,7 +78,6 @@ CATEGORIES_COMBOS = [
     CategoryNameCodeCombo("Porter", "8"),
     CategoryNameCodeCombo("Stout", "9"),
     CategoryNameCodeCombo("Strong Stout", "10"),
-    CategoryNameCodeCombo("Specialty", "21"),
 ]
 
 

@@ -1,9 +1,31 @@
+from copy import deepcopy
 import csv
+from dataclasses import asdict, dataclass, field
 from io import StringIO
 import io
-from typing import Optional, TextIO
+from typing import Optional, TextIO, Union
 
-REQUIRED_HEADERS = ["Entry Number", "Category", "Sub-category", "Total Score"]
+REQUIRED_HEADERS = [
+    "Entry Number",
+    "Category",
+    "Sub-category",
+    "Total Score",
+    "Appearance",
+    "Body",
+    "Aroma",
+    "Overall",
+    "Flavour",
+    "Score Spread",
+]
+
+
+@dataclass
+class HeaderValidateResponse:
+    ok: bool = True
+    missing: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict[str, Union[bool, list[str]]]:
+        return asdict(self)
 
 
 def try_decode_stream(b: bytes) -> Optional[StringIO]:
@@ -16,19 +38,19 @@ def try_decode_stream(b: bytes) -> Optional[StringIO]:
     return t_io
 
 
-def has_required_headers(data: TextIO) -> bool:
+def validate_headers(data: TextIO) -> HeaderValidateResponse:
     dr = csv.DictReader(data)
     data.seek(0)
-    ok = True
+    required_headers = deepcopy(REQUIRED_HEADERS)
 
     if dr.fieldnames is None:
-        return False
+        return HeaderValidateResponse(ok=False, missing=required_headers)
 
-    for h in REQUIRED_HEADERS:
-        if h not in dr.fieldnames:
-            ok = False
+    [required_headers.remove(x) for x in dr.fieldnames if x in required_headers]
 
-    return ok
+    return HeaderValidateResponse(
+        ok=len(required_headers) == 0, missing=required_headers
+    )
 
 
 def is_csv(data: TextIO) -> bool:
