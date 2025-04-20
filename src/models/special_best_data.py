@@ -59,4 +59,7 @@ WHERE sid = %s;
     cursor.execute(sql, (sbi.id,))
     rec = cursor.fetchone()
 
+    if rec is None:
+        return None
+
     return SpecialBestData(id=rec[0], sid=rec[1], bid=rec[2], eid=rec[3], sbd_place=rec[4])

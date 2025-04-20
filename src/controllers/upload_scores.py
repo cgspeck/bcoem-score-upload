@@ -251,17 +251,17 @@ def show_form() -> Union[str, Response]:
                     required_places=1,
                 ),
                 DeterminePlaceGetterReq(
-                    category="8",
+                    category="10",
                     category_name="Porter",
                     required_places=3,
                 ),
                 DeterminePlaceGetterReq(
-                    category="9",
+                    category="11",
                     category_name="Stout",
                     required_places=3,
                 ),
                 DeterminePlaceGetterReq(
-                    category="10",
+                    category="12",
                     category_name="Strong Stout",
                     required_places=3,
                 ),
