@@ -69,10 +69,6 @@ body {
     page-break-after: avoid;
   }
 
-  hr.page-break {
-    page-break-after: always;
-  }
-
   .table table {
     page-break-before: avoid;
   }
