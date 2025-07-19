@@ -6,7 +6,7 @@
     href="{{ url_for('static', filename='css/reports.css') }}"
 >
 {% for table in tables %}
-  <h2>Table {{ loop.index }}: {{ table.category | title }}</h2>
+  <h2>Table {{ loop.index }}: {{ table.category | title }}{{sort_by_str}}</h2>
   {% if table.entries | length > 0 %}
     <table class="table table-striped table-bordered table-sm">
       <thead>
