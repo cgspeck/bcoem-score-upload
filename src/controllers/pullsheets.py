@@ -18,8 +18,10 @@ def before_request() -> None:
 
 @pullsheets.route("")
 def show() -> str:
-    env_short_name = request.args.get('comp_env')
+    env_short_name = request.args.get('comp_env', 'prod')
     env_full_name = [x[1] for x in current_app.config["BCOME_ENV_CHOICES"] if x[0] == env_short_name][0]
+
+    sort_by = request.args.get('sort_by')
 
     messages: List[str] = []
     db_config = db_config_for_env_shortname(env_short_name, messages)
@@ -32,4 +34,9 @@ def show() -> str:
         return message_log(messages)
 
     tables = get_data(cnn)
+
+    if sort_by is not None and sort_by == "style":
+        for judging_table in tables:
+            judging_table.entries.sort(key=lambda e: e.brewstyle_num_int)
+
     return render_template(f"pullsheets.html", env_full_name=env_full_name, tables=tables)

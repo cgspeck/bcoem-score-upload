@@ -15,6 +15,10 @@ class Entry:
     pouring_notes: Optional[str]
     rouse_yeast: Optional[str]
     possible_allergens: Optional[str]
+    # Category e.g. 10 for porter, is string in BCOEM
+    brewstyle_group_int: int
+    # Style e.g. 1 for english porter, is string in BCOEM
+    brewstyle_num_int: int
 
 @dataclass
 class JudgingTable:
@@ -61,7 +65,7 @@ WHERE id = %s;
         s_recs[style_id] = StyleRec(brewstyle_group, brewstyle_num)
 
 
-def _get_judging_entries_for_style(cnn: MySQLConnection, brew_category_sort: str, brew_subcategory: str) -> List[Entry]:
+def _get_judging_entries_for_style(cnn: MySQLConnection, brew_category_sort: str, brew_subcategory: str, s_rec: StyleRec) -> List[Entry]:
     sql = """
 SELECT id, brewStyle, brewCategorySort, brewSubCategory, brewInfo, brewABV, brewPouring, brewPossAllergens, brewPaid, brewReceived
 FROM brewing
@@ -90,6 +94,14 @@ ORDER BY id ASC;
             pouring_speed = brew_pouring_dict.get('pouring', None)
             rouse_yeast = brew_pouring_dict.get('pouring_rouse', None)
 
+        brewstyle_num_int=999
+        if s_rec.brewstyle_num.isdigit():
+            brewstyle_num_int = int(s_rec.brewstyle_num)
+        brewstyle_group_int=999
+        if s_rec.brewstyle_group.isdigit():
+            brewstyle_group_int = int(s_rec.brewstyle_group)
+
+
         entry = Entry(
             entry_number=id,
             style=brewStyle,
@@ -98,7 +110,9 @@ ORDER BY id ASC;
             required_info=brewInfo,
             pouring_notes=pouring_notes,
             pouring_speed=pouring_speed,
-            rouse_yeast=rouse_yeast
+            rouse_yeast=rouse_yeast,
+            brewstyle_num_int=brewstyle_num_int,
+            brewstyle_group_int=brewstyle_group_int
         )
         memo.append(entry)
     return memo
@@ -107,7 +121,7 @@ def _get_judging_entries(cnn: MySQLConnection, table: JudgingTable, s_recs: Dict
     memo: List[Entry] = []
     for style_id in table.style_ids:
         s_rec = s_recs[style_id]
-        memo.extend(_get_judging_entries_for_style(cnn, s_rec.brewstyle_group, s_rec.brewstyle_num))
+        memo.extend(_get_judging_entries_for_style(cnn, s_rec.brewstyle_group, s_rec.brewstyle_num, s_rec))
     
     memo.sort(key=lambda e: e.entry_number)
     return memo

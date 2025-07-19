@@ -23,9 +23,13 @@
 
 <h2>Reports</h2>
 
-<p><a href={{ url_for('pullsheets.show', comp_env='test') }}>Pull Sheets (test)</a></p>
+<p><a href={{ url_for('pullsheets.show', comp_env='test') }}>Pull Sheets by entry number (test)</a></p>
 
-<p><a href={{ url_for('pullsheets.show', comp_env='prod') }}>Pull Sheets (prod)</a></p>
+<p><a href={{ url_for('pullsheets.show', comp_env='prod') }}>Pull Sheets by entry number (prod)</a></p>
+
+<p><a href={{ url_for('pullsheets.show', comp_env='test', sort_by='style') }}>Pull Sheets by style</a></p>
+
+<p><a href={{ url_for('pullsheets.show', comp_env='prod', sort_by='style') }}>Pull Sheets by style</a></p>
 
 <p><a href={{ url_for('all_results.show', comp_env='test' ) }}>All results with all details (test)</a></p>
 
